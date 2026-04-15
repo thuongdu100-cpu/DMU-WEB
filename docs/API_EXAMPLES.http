@@ -1,0 +1,28 @@
+### DMU Web — ví dụ gọi API (VS Code REST Client / IntelliJ HTTP)
+@base = http://localhost:3000
+
+### Đăng nhập admin (lưu cookie session cho các request sau)
+POST {{base}}/api/admin/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+### Danh sách bài — REST
+GET {{base}}/posts
+
+### Chi tiết bài id = 1
+GET {{base}}/posts/1
+
+### Tạo bài (multipart — trong REST Client cần dùng tool hỗ trợ form-data hoặc Postman)
+# POST {{base}}/posts
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+# (đính kèm fields: title, content, excerpt, requiresLogin, images[], videos[])
+
+### Danh sách tin công khai (trang chủ)
+GET {{base}}/api/public/articles
+
+### Xoá bài (cần cookie admin)
+DELETE {{base}}/posts/1

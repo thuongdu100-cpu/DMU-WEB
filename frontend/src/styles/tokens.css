@@ -1,0 +1,96 @@
+/* =============================================================================
+   DMU — design tokens (import first)
+   Fallbacks: rgba next to color-mix where both appear in site.css / admin.css
+   ============================================================================= */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-page: #05070a;
+  --bg-card: #0d1117;
+  --bg-panel: #11141d;
+  --text-primary: #ffffff;
+  --text-body: #9ca3af;
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, 0.12);
+  --border-subtle: rgba(148, 163, 184, 0.15);
+  --glow-blue: rgba(56, 189, 248, 0.35);
+  --glow-violet: rgba(167, 139, 250, 0.28);
+  --glow-magenta: rgba(236, 72, 153, 0.15);
+  --btn-login-start: #2563eb;
+  --btn-login-end: #1e3a8a;
+  --btn-primary-start: #0ea5e9;
+  --btn-primary-end: #2563eb;
+  --hero-gradient-start: #38bdf8;
+  --hero-gradient-mid: #818cf8;
+  --hero-gradient-end: #c084fc;
+  --badge-bg: rgba(15, 23, 42, 0.85);
+  --pill-bg: rgba(30, 41, 59, 0.75);
+  --header-bg: rgba(5, 7, 10, 0.72);
+  --shadow-primary: 0 0 28px rgba(14, 165, 233, 0.35);
+  /* Pre-mixed approximations (fallback when color-mix unsupported) */
+  --mix-card-tint: #0f141c;
+  --mix-footer-panel-start: #121820;
+  --mix-arrow-bg-start: #12161f;
+  --mix-footer-link: #e4e7ec;
+  /* Accent-tinted rgba fallbacks (pair with color-mix overrides) */
+  --ui-top-inset: rgba(255, 255, 255, 0.06);
+  --accent-glow-12: rgba(56, 189, 248, 0.12);
+  --accent-glow-18: rgba(56, 189, 248, 0.18);
+  --accent-glow-20: rgba(14, 165, 233, 0.2);
+  --accent-glow-22: rgba(56, 189, 248, 0.22);
+  --accent-glow-28: rgba(56, 189, 248, 0.28);
+  --accent-glow-35: rgba(56, 189, 248, 0.35);
+  --accent-ring-22: rgba(56, 189, 248, 0.2);
+  --accent-border-strong: rgba(56, 189, 248, 0.45);
+  --input-inset-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.22);
+  --input-inset-shadow-focus: inset 0 1px 2px rgba(0, 0, 0, 0.18);
+  --placeholder-muted: rgba(156, 163, 175, 0.72);
+  --file-border-dashed: rgba(130, 150, 180, 0.35);
+  --mix-file-hover-bg: #0f131a;
+  --admin-input-focus-border: rgba(56, 189, 248, 0.52);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg-page: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-panel: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-body: #475569;
+  --accent: #0284c7;
+  --accent-soft: rgba(2, 132, 199, 0.1);
+  --border-subtle: rgba(15, 23, 42, 0.1);
+  --glow-blue: rgba(2, 132, 199, 0.2);
+  --glow-violet: rgba(99, 102, 241, 0.15);
+  --glow-magenta: rgba(219, 39, 119, 0.08);
+  --btn-login-start: #0284c7;
+  --btn-login-end: #0c4a6e;
+  --btn-primary-start: #0ea5e9;
+  --btn-primary-end: #2563eb;
+  --hero-gradient-start: #0284c7;
+  --hero-gradient-mid: #6366f1;
+  --hero-gradient-end: #a855f7;
+  --badge-bg: rgba(241, 245, 249, 0.95);
+  --pill-bg: rgba(255, 255, 255, 0.9);
+  --header-bg: rgba(241, 245, 249, 0.85);
+  --shadow-primary: 0 0 24px rgba(2, 132, 199, 0.25);
+  --mix-card-tint: #f8fafc;
+  --mix-footer-panel-start: #fafbfc;
+  --mix-arrow-bg-start: #f1f5f9;
+  --mix-footer-link: #1e293b;
+  --ui-top-inset: rgba(15, 23, 42, 0.06);
+  --accent-glow-12: rgba(2, 132, 199, 0.12);
+  --accent-glow-18: rgba(2, 132, 199, 0.18);
+  --accent-glow-20: rgba(2, 132, 199, 0.2);
+  --accent-glow-22: rgba(2, 132, 199, 0.22);
+  --accent-glow-28: rgba(2, 132, 199, 0.28);
+  --accent-glow-35: rgba(2, 132, 199, 0.35);
+  --accent-ring-22: rgba(2, 132, 199, 0.22);
+  --accent-border-strong: rgba(2, 132, 199, 0.45);
+  --input-inset-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.07);
+  --input-inset-shadow-focus: inset 0 1px 2px rgba(15, 23, 42, 0.06);
+  --placeholder-muted: rgba(71, 85, 105, 0.72);
+  --file-border-dashed: rgba(100, 116, 139, 0.45);
+  --mix-file-hover-bg: #ebeef3;
+  --admin-input-focus-border: rgba(2, 132, 199, 0.5);
+}

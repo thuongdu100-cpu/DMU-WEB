@@ -1,0 +1,28 @@
+{
+  "name": "dmu-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DMU NEWS — React (Vite) + Node (Express API)",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "node backend/server.js",
+    "server:dev": "node --watch backend/server.js",
+    "db:init": "node backend/db/init-db.js",
+    "client": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "dev": "concurrently -n api,web -c blue,magenta \"cross-env PORT=3001 npm run server:dev\" \"cross-env VITE_API_TARGET=http://localhost:3001 npm run client\""
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {
+    "append-field": "^2.0.0",
+    "busboy": "^1.6.0",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3"
+  }
+}
