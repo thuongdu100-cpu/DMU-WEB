@@ -479,6 +479,26 @@
       "t": "2026-04-18T02:10:51.728Z",
       "path": "/news/1",
       "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-18T02:26:09.623Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T02:26:09.627Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T02:26:10.616Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-18T02:26:10.619Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
     }
   ]
 }
