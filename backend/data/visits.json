@@ -1,0 +1,484 @@
+{
+  "visits": [
+    {
+      "t": "2026-04-17T03:16:50.546Z",
+      "path": "/test-smoke",
+      "ref": ""
+    },
+    {
+      "t": "2026-04-17T03:16:58.442Z",
+      "path": "/test-smoke",
+      "ref": ""
+    },
+    {
+      "t": "2026-04-17T03:18:36.866Z",
+      "path": "/test-smoke",
+      "ref": ""
+    },
+    {
+      "t": "2026-04-17T06:41:13.975Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T06:41:13.981Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T07:02:45.777Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T07:02:45.786Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T07:03:07.413Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T07:03:07.418Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T07:03:37.506Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-17T07:03:37.509Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-17T07:04:01.655Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T07:04:01.659Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:34:47.546Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:34:47.550Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:35:15.755Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:35:15.759Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:35:18.368Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-17T08:35:18.371Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-17T08:42:10.067Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:42:10.085Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:52:14.494Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:52:14.501Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:56:31.313Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T08:56:31.320Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:00:16.319Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-17T09:00:16.322Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-17T09:03:25.043Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:03:25.045Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:03:27.623Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:03:27.625Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:05:22.848Z",
+      "path": "/news/%7Bid%7D",
+      "ref": "http://localhost:5173/news/%7Bid%7D"
+    },
+    {
+      "t": "2026-04-17T09:05:22.855Z",
+      "path": "/news/%7Bid%7D",
+      "ref": "http://localhost:5173/news/%7Bid%7D"
+    },
+    {
+      "t": "2026-04-17T09:05:36.579Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:05:36.580Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:05:39.849Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:05:39.855Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:05:48.460Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:05:48.462Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:06:39.505Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:06:39.509Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:07:33.669Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:08:14.465Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:08:14.468Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:09:40.535Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:09:40.557Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:15:01.007Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:15:01.009Z",
+      "path": "/news/2",
+      "ref": "http://localhost:5173/news/2"
+    },
+    {
+      "t": "2026-04-17T09:15:04.198Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:15:04.202Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:15:06.709Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-17T09:15:06.713Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-17T09:15:09.126Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:15:09.129Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:26:27.786Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:26:27.814Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:34:17.010Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:34:17.020Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:34:19.756Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:34:19.759Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:35:16.947Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:35:16.951Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:35:26.652Z",
+      "path": "/news/3",
+      "ref": "http://localhost:5173/news/3"
+    },
+    {
+      "t": "2026-04-17T09:35:26.654Z",
+      "path": "/news/3",
+      "ref": "http://localhost:5173/news/3"
+    },
+    {
+      "t": "2026-04-17T09:40:01.904Z",
+      "path": "/news/3",
+      "ref": "http://localhost:5173/news/3"
+    },
+    {
+      "t": "2026-04-17T09:40:01.908Z",
+      "path": "/news/3",
+      "ref": "http://localhost:5173/news/3"
+    },
+    {
+      "t": "2026-04-17T09:40:07.311Z",
+      "path": "/news/3",
+      "ref": "http://localhost:5173/news/3"
+    },
+    {
+      "t": "2026-04-17T09:40:07.314Z",
+      "path": "/news/3",
+      "ref": "http://localhost:5173/news/3"
+    },
+    {
+      "t": "2026-04-17T09:40:13.380Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:40:13.383Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:43:22.405Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:43:22.417Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-17T09:43:24.835Z",
+      "path": "/news/3",
+      "ref": "http://localhost:5173/news/3"
+    },
+    {
+      "t": "2026-04-17T09:43:24.839Z",
+      "path": "/news/3",
+      "ref": "http://localhost:5173/news/3"
+    },
+    {
+      "t": "2026-04-18T00:51:10.696Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T00:51:10.705Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T00:52:19.797Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T00:52:19.803Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T00:52:31.222Z",
+      "path": "/news/4",
+      "ref": "http://localhost:5173/news/4"
+    },
+    {
+      "t": "2026-04-18T00:52:31.227Z",
+      "path": "/news/4",
+      "ref": "http://localhost:5173/news/4"
+    },
+    {
+      "t": "2026-04-18T00:53:05.712Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T00:53:05.730Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T00:56:40.049Z",
+      "path": "/x",
+      "ref": ""
+    },
+    {
+      "t": "2026-04-18T00:56:59.660Z",
+      "path": "/test",
+      "ref": ""
+    },
+    {
+      "t": "2026-04-18T01:29:50.223Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T01:29:50.229Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T01:31:29.736Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T01:31:29.741Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T01:31:32.092Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-18T01:31:32.095Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-18T02:09:52.096Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T02:09:52.101Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T02:10:50.024Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T02:10:50.027Z",
+      "path": "/",
+      "ref": "http://localhost:5173/"
+    },
+    {
+      "t": "2026-04-18T02:10:51.725Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    },
+    {
+      "t": "2026-04-18T02:10:51.728Z",
+      "path": "/news/1",
+      "ref": "http://localhost:5173/news/1"
+    }
+  ]
+}

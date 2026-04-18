@@ -1,0 +1,11 @@
+# Khong commit file chua mat khau / URL that
+.env
+backend/config/db.env
+
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,148 @@
+// ============================================================
+//  DMU — Database Schema (PostgreSQL + Prisma)
+//  Single schema: public
+//  Luồng: Admin đăng bài → Người xem đọc qua link
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------------
+//  1. ADMINS — Tài khoản quản trị
+// ------------------------------------------------------------
+model admins {
+  id         Int        @id @default(autoincrement())
+  username   String     @unique
+  password   String                          // bcrypt hash
+  role       String     @default("admin")
+  created_at DateTime   @default(now()) @db.Timestamp(6)
+
+  articles   articles[]
+}
+
+// ------------------------------------------------------------
+//  2. CATEGORIES — Danh mục bài viết (có thể lồng nhau)
+// ------------------------------------------------------------
+model categories {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  slug        String       @unique
+  description String       @default("")
+  parent_id   Int?
+  created_at  DateTime     @default(now()) @db.Timestamp(6)
+
+  parent   categories?  @relation("CategoryTree", fields: [parent_id], references: [id], onDelete: SetNull)
+  children categories[] @relation("CategoryTree")
+  articles articles[]
+
+  @@index([slug])
+}
+
+// ------------------------------------------------------------
+//  3. TAGS — Thẻ từ khóa
+// ------------------------------------------------------------
+model tags {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  slug         String         @unique
+
+  article_tags article_tags[]
+
+  @@index([slug])
+}
+
+// ------------------------------------------------------------
+//  4. ARTICLES — Bài viết
+// ------------------------------------------------------------
+model articles {
+  id             Int              @id @default(autoincrement())
+  title          String
+  slug           String           @unique
+  excerpt        String           @default("")
+  content        String           @default("")
+  thumbnail      String?
+  status         String           @default("draft")   // draft | published
+  view_count     Int              @default(0)
+  published_at   DateTime?
+  created_at     DateTime         @default(now()) @db.Timestamp(6)
+  updated_at     DateTime         @default(now()) @db.Timestamp(6)
+
+  author_id      Int?
+  category_id    Int?
+
+  author         admins?          @relation(fields: [author_id], references: [id], onDelete: SetNull)
+  category       categories?      @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  content_layout content_layout[]
+  article_tags   article_tags[]
+
+  @@index([status])
+  @@index([slug])
+  @@index([published_at])
+  @@index([updated_at])
+}
+
+// ------------------------------------------------------------
+//  5. ARTICLE_TAGS — Nối articles ↔ tags (many-to-many)
+// ------------------------------------------------------------
+model article_tags {
+  article_id Int
+  tag_id     Int
+
+  article    articles @relation(fields: [article_id], references: [id], onDelete: Cascade)
+  tag        tags     @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([article_id, tag_id])
+}
+
+// ------------------------------------------------------------
+//  6. CONTENT_LAYOUT — Block nội dung trong bài viết
+//     type: text | image | video | embed | quote | code
+// ------------------------------------------------------------
+model content_layout {
+  id            Int             @id @default(autoincrement())
+  article_id    Int
+  type          String
+  content       String          @default("")
+  position      Int
+  metadata      Json?
+
+  article       articles        @relation(fields: [article_id], references: [id], onDelete: Cascade)
+  content_media content_media[]
+
+  @@index([article_id])
+}
+
+// ------------------------------------------------------------
+//  7. MEDIA — File ảnh/video được upload
+// ------------------------------------------------------------
+model media {
+  id            Int             @id @default(autoincrement())
+  url           String
+  type          String                          // image | video | document
+  filename      String?
+  mime_type     String?
+  size_bytes    Int?
+  created_at    DateTime        @default(now()) @db.Timestamp(6)
+
+  content_media content_media[]
+}
+
+// ------------------------------------------------------------
+//  8. CONTENT_MEDIA — Nối content_layout ↔ media (many-to-many)
+// ------------------------------------------------------------
+model content_media {
+  id         Int            @id @default(autoincrement())
+  content_id Int
+  media_id   Int
+
+  content    content_layout @relation(fields: [content_id], references: [id], onDelete: Cascade)
+  media      media          @relation(fields: [media_id], references: [id], onDelete: Cascade)
+
+  @@unique([content_id, media_id])
+}

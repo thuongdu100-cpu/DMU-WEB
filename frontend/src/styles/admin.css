@@ -1,0 +1,601 @@
+/* =============================================================================
+   Admin — bảng, form, thông báo (tokens.css import trước file này)
+   ============================================================================= */
+
+/* —— Layout —— */
+.admin-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* —— Nav —— */
+.admin-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.admin-nav a {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.admin-nav a:hover {
+  text-decoration: underline;
+}
+
+.admin-nav .spacer {
+  flex: 1;
+  min-width: 1rem;
+}
+
+.admin-h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.admin-lead {
+  margin: 0 0 1.5rem;
+  color: var(--text-body);
+  font-size: 0.9rem;
+}
+
+/* —— Card —— */
+.admin-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-card h2 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* —— Table —— */
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.admin-table :where(th, td) {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.admin-table th {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* —— Form: labels —— */
+.admin-form label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 1.1rem 0 0.5rem;
+}
+
+.admin-form label:first-of-type {
+  margin-top: 0;
+}
+
+/*
+  Trường text (không gộp file/button).
+  transition chỉ border/box-shadow/background — tránh transition: all
+*/
+.admin-form
+  :is(
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="search"],
+    input:not([type]),
+    textarea
+  ) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 0.95rem;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--text-primary);
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  caret-color: var(--accent);
+  box-shadow: var(--input-inset-shadow);
+  box-shadow: inset 0 1px 2px color-mix(in srgb, var(--bg-page) 65%, transparent);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.admin-form
+  :is(
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="search"],
+    input:not([type]),
+    textarea
+  )::placeholder {
+  color: var(--placeholder-muted);
+  color: color-mix(in srgb, var(--text-body) 72%, transparent);
+}
+
+.admin-form
+  :is(
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="search"],
+    input:not([type]),
+    textarea
+  ):hover {
+  border-color: var(--accent-ring-22);
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border-subtle));
+}
+
+.admin-form
+  :is(
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="search"],
+    input:not([type]),
+    textarea
+  ):focus-visible {
+  outline: none;
+  border-color: var(--admin-input-focus-border);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border-subtle));
+  box-shadow:
+    0 0 0 3px var(--accent-soft),
+    var(--input-inset-shadow-focus);
+  box-shadow:
+    0 0 0 3px var(--accent-soft),
+    inset 0 1px 2px color-mix(in srgb, var(--bg-page) 50%, transparent);
+}
+
+.admin-form textarea {
+  min-height: 200px;
+  resize: vertical;
+}
+
+/* —— Form: file —— */
+.admin-form input[type="file"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.65rem 0.85rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-body);
+  background-color: var(--bg-panel);
+  border: 1px dashed var(--file-border-dashed);
+  border: 1px dashed color-mix(in srgb, var(--border-subtle) 90%, var(--accent));
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.admin-form input[type="file"]:hover {
+  border-color: var(--accent-glow-28);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border-subtle));
+  background-color: var(--mix-file-hover-bg);
+  background-color: color-mix(in srgb, var(--bg-panel) 85%, var(--bg-card));
+}
+
+.admin-form input[type="file"]::file-selector-button {
+  margin-right: 0.85rem;
+  padding: 0.45rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--btn-primary-start), var(--btn-primary-end));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-form input[type="file"]::file-selector-button:hover {
+  filter: brightness(1.06);
+}
+
+.admin-form .btn-row {
+  margin-top: 1.25rem;
+}
+
+/* —— Messages —— */
+.admin-msg {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.admin-msg.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.admin-msg.ok {
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.admin-result-card {
+  margin-bottom: 1rem;
+}
+
+.admin-result-line {
+  margin: 0.2rem 0;
+  font-size: 0.85rem;
+  color: var(--text-body);
+}
+
+.admin-result-json {
+  margin: 0.75rem 0 0;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-panel);
+  color: var(--text-body);
+  max-height: 260px;
+  overflow: auto;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+/* —— Actions —— */
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-actions :is(button, a.btn-admin) {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.admin-actions button.danger {
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #fecaca;
+}
+
+.admin-actions :is(button.primary, a.btn-admin.primary) {
+  background: linear-gradient(135deg, var(--btn-primary-start), var(--btn-primary-end));
+  color: #fff;
+  border: none;
+}
+
+/* —— Dashboard charts (SVG) —— */
+.admin-chart-card h2 {
+  margin-bottom: 0.25rem;
+}
+
+.admin-chart-sub {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--text-body);
+  opacity: 0.9;
+}
+
+.admin-chart-figure {
+  margin: 0;
+  width: 100%;
+}
+
+.admin-chart-svg {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  border-radius: 10px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+}
+
+.admin-chart-bar-rect {
+  transition: opacity 0.15s ease;
+}
+
+.admin-chart-bar-rect:hover {
+  opacity: 0.88;
+}
+
+.admin-chart-caption {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--text-body);
+  opacity: 0.85;
+}
+
+.admin-chart-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.admin-chart-nav-meta {
+  font-size: 0.85rem;
+  color: var(--text-body);
+  text-align: center;
+  min-width: 12rem;
+}
+
+.admin-wave-svg .admin-wave-line {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.28));
+}
+
+.admin-wave-dot {
+  cursor: default;
+}
+
+/* —— Article / preview —— */
+.preview-img {
+  max-width: 120px;
+  max-height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 0.25rem 0.5rem 0 0;
+}
+
+.article-body-preview {
+  white-space: pre-wrap;
+  color: var(--text-body);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.keep-img-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.35rem 0;
+  font-size: 0.8rem;
+}
+
+/* —— Checkbox row —— */
+.admin-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-body);
+  cursor: pointer;
+}
+
+.admin-checkbox-row input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+/* —— Media slots (ảnh + video có thứ tự) —— */
+.admin-media-label {
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.5rem !important;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-media-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.admin-hidden-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.admin-media-slots {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-media-slot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.admin-media-slot__preview {
+  flex: 0 0 auto;
+  width: 120px;
+  height: 72px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+}
+
+.admin-media-slot__preview img,
+.admin-media-slot__preview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-media-slot__badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  min-width: 3rem;
+}
+
+.admin-media-slot__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.btn-admin.tiny {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  min-width: 2rem;
+}
+
+/* —— Bài viết: khối chữ + ảnh/video xen kẽ —— */
+.admin-article-blocks {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-article-block {
+  padding: 0.75rem 0.85rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.admin-article-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-article-block__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.admin-article-block__textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 6rem;
+  font: inherit;
+  line-height: 1.5;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  color: var(--text-body);
+  resize: vertical;
+}
+
+.admin-article-block__media {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-article-block__fname {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-body);
+  word-break: break-all;
+}
+
+.admin-article-view-layout .article-layout-flow {
+  margin-top: 0.5rem;
+}
+
+.admin-article-view-layout .article-body {
+  font-size: 0.95rem;
+}
+
+.admin-status-pill {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.admin-status-pill--draft {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.admin-status-pill--live {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.admin-msg.draft-banner {
+  margin-bottom: 1rem;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  color: var(--text-body);
+}
+
+.admin-article-save-row {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
