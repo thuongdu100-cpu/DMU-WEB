@@ -250,29 +250,6 @@
   border: 1px solid rgba(34, 197, 94, 0.35);
 }
 
-.admin-result-card {
-  margin-bottom: 1rem;
-}
-
-.admin-result-line {
-  margin: 0.2rem 0;
-  font-size: 0.85rem;
-  color: var(--text-body);
-}
-
-.admin-result-json {
-  margin: 0.75rem 0 0;
-  padding: 0.75rem;
-  border-radius: 10px;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-panel);
-  color: var(--text-body);
-  max-height: 260px;
-  overflow: auto;
-  font-size: 0.75rem;
-  line-height: 1.45;
-}
-
 /* —— Actions —— */
 .admin-actions {
   display: flex;
@@ -490,95 +467,10 @@
   margin-left: auto;
 }
 
-/* —— btn-admin — nút hành động trong admin panel —— */
-.btn-admin {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.45rem 1rem;
-  font-family: inherit;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: var(--text-primary);
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--accent) 18%, var(--bg-panel)) 0%,
-    var(--bg-panel) 100%);
-  /* Fallback cho trình duyệt cũ */
-  background: var(--bg-panel);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background 0.18s ease, border-color 0.18s ease,
-              box-shadow 0.18s ease, transform 0.1s ease;
-  user-select: none;
-}
-
-.btn-admin:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--accent) 14%, var(--bg-panel));
-  border-color: var(--accent-glow-28);
-  box-shadow: 0 0 0 2px var(--accent-soft);
-}
-
-.btn-admin:active:not(:disabled) {
-  transform: scale(0.97);
-  box-shadow: none;
-}
-
-.btn-admin:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-/* Toolbar buttons: + Đoạn chữ | + Ảnh | + Video */
-.admin-media-toolbar .btn-admin {
-  padding: 0.42rem 0.9rem;
-  background: linear-gradient(135deg,
-    var(--btn-primary-start, #0ea5e9),
-    var(--btn-primary-end, #2563eb));
-  border: none;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.20);
-}
-
-.admin-media-toolbar .btn-admin:hover:not(:disabled) {
-  filter: brightness(1.1);
-  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
-  border: none;
-}
-
-/* tiny: ↑ ↓ di chuyển block */
 .btn-admin.tiny {
-  padding: 0.25rem 0.55rem;
-  font-size: 0.78rem;
-  min-width: 2.1rem;
-  justify-content: center;
-  border-color: var(--accent-glow-22);
-  color: var(--accent);
-  background: var(--bg-card);
-}
-
-.btn-admin.tiny:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--accent) 12%, var(--bg-card));
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-soft);
-}
-
-/* tiny danger: Xoá */
-.btn-admin.tiny.danger {
-  border-color: rgba(239, 68, 68, 0.40);
-  color: #fca5a5;
-  background: rgba(239, 68, 68, 0.06);
-}
-
-.btn-admin.tiny.danger:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.14);
-  border-color: rgba(239, 68, 68, 0.70);
-  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.12);
-  color: #fecaca;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  min-width: 2rem;
 }
 
 /* —— Bài viết: khối chữ + ảnh/video xen kẽ —— */

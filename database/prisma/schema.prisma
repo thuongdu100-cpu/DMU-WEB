@@ -125,6 +125,7 @@ model media {
   id            Int             @id @default(autoincrement())
   url           String
   type          String                          // image | video | document
+  is_hero       Boolean  @default(false)
   filename      String?
   mime_type     String?
   size_bytes    Int?

@@ -1,7 +1,3 @@
-/**
- * Upsert admin in `admins` (bcrypt hash). Requires DATABASE_URL and schema: npm run db:push
- * Env: ADMIN_USERNAME (default admin), ADMIN_PASSWORD (default admin123)
- */
 "use strict";
 
 const path = require("path");
@@ -27,10 +23,13 @@ async function main() {
   const url = (process.env.DATABASE_URL || "").trim();
   if (!url) {
     throw new Error(
-      "Thi\u1EBFu DATABASE_URL. \u0110\u1EB7t trong .env ho\u1EB7c backend/config/db.env"
+      "Thiếu DATABASE_URL. Đặt trong .env hoặc backend/config/db.env"
     );
   }
 
+  // ===============================
+  // 1. Seed ADMIN
+  // ===============================
   const username = (process.env.ADMIN_USERNAME || "admin").trim().toLowerCase();
   const plain = process.env.ADMIN_PASSWORD || "admin123";
   const hash = bcrypt.hashSync(String(plain), 10);
@@ -41,7 +40,32 @@ async function main() {
     update: { password: hash, role: "admin" }
   });
 
-  console.log("Seed xong. T\u00EAn \u0111\u0103ng nh\u1EADp admin:", username);
+  console.log("Seed admin xong:", username);
+
+  // ===============================
+  // 2. Seed VIDEO INTRO
+  // ===============================
+  const existingVideo = await prisma.media.findFirst({
+    where: {
+      type: "video",
+      filename: "0417.mp4"
+    }
+  });
+
+  if (!existingVideo) {
+    await prisma.media.create({
+      data: {
+        url: "/uploads/videos/0417.mp4",
+        type: "video",
+        filename: "0417.mp4",
+        mime_type: "video/mp4"
+      }
+    });
+
+    console.log("Đã seed video intro");
+  } else {
+    console.log("Video intro đã tồn tại, bỏ qua");
+  }
 }
 
 main()

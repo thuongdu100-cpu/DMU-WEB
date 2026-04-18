@@ -2,6 +2,7 @@
  * Express application factory (server.js and integration tests).
  * Call connectDatabase() before listen or before requests use the DB.
  */
+const cors = require("cors");
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
@@ -11,6 +12,7 @@ const config = require("../config");
 const publicArticlesApi = require("./routes/api/publicArticles.routes");
 const healthApi = require("./routes/api/health.routes");
 const dbPingApi = require("./routes/api/dbPing.routes");
+const mediaRoutes = require("./routes/api/media.routes");
 // Routes — Admin API (yêu cầu đăng nhập)
 const analyticsRoutes = require("./routes/analytics.routes");
 const adminAuthRoutes = require("./routes/admin/adminAuth.routes");
@@ -27,9 +29,9 @@ function ensureUploadDirs() {
 
 function buildApp() {
   ensureUploadDirs();
-
+  
   const app = express();
-
+  app.use(cors());
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
@@ -48,7 +50,7 @@ function buildApp() {
       }
     })
   );
-
+  app.use("/uploads",express.static(path.resolve(__dirname, "../uploads")));
   app.use("/uploads", express.static(config.paths.uploads));
 
   // Admin
@@ -57,6 +59,7 @@ function buildApp() {
   app.use("/api/admin", adminStatsRoutes);
   app.use("/api/admin", adminArticlesRoutes);
   // Public
+  app.use("/api/media", mediaRoutes);
   app.use("/api", publicArticlesApi);
   app.use("/api", healthApi);
   app.use("/api", dbPingApi);

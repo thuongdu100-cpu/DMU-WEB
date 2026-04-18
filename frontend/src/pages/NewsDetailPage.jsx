@@ -6,7 +6,6 @@ import { SiteFooter } from "../components/SiteFooter.jsx";
 import { usePageVisit } from "../hooks/usePageVisit.js";
 import { mediaDisplayList } from "../utils/articleMedia.js";
 import { ArticleBodyFromLayout } from "../components/ArticleBodyFromLayout.jsx";
-import { readResponseJson } from "../api/client.js";
 
 function formatDate(iso) {
   if (!iso) return "";
@@ -29,8 +28,8 @@ export function NewsDetailPage() {
       setState((s) => ({ ...s, loading: true, err: "" }));
       try {
         const r = await fetch("/api/public/articles/" + encodeURIComponent(id), { credentials: "include" });
-        const d = await readResponseJson(r);
-        if (!r.ok) throw new Error(d.message || "Kh\u00F4ng t\u1EA3i \u0111\u01B0\u1EE3c b\u00E0i.");
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.message || "Không tải được bài.");
         if (cancelled) return;
         setState({ loading: false, err: "", article: d.article });
       } catch (e) {
