@@ -239,20 +239,20 @@ a {
 /* Hero */
 .hero {
   position: relative;
+  overflow: hidden;
   z-index: 1;
   padding: 4rem 0 5rem;
   background: transparent;
 }
 
-/* Hero: 2 cột — nội dung trái (~58%), vùng ảnh robot phải */
 .hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: clamp(1.75rem, 4vw, 3rem);
+  display: flex;
+  gap: 40px;
   align-items: center;
 }
 
 .hero-content {
+  flex: 7;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -261,22 +261,48 @@ a {
 }
 
 .hero-visual {
-  min-width: 0;
+  flex: 7;
+  position: relative;
   min-height: clamp(260px, 36vw, 420px);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
 }
 
-.hero-visual__img {
+.hero-video {
   width: 100%;
-  max-width: 100%;
-  height: auto;
-  max-height: min(480px, 55vh);
-  object-fit: contain;
-  object-position: center bottom;
-  display: block;
+  height: 1000%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+
+  transition: filter 0.3s ease;
+}
+
+.hero-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* DARK MODE OVERLAY */
+[data-theme="dark"] .hero-visual::after {
+  background: radial-gradient( circle at center, rgba(0,0,0,0.05), rgba(0,0,0,0.35)
+  );
+}
+
+[data-theme="dark"] .hero-video {
+  filter: brightness(0.85) contrast(1.15) saturate(1.1);
+}
+
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
 }
 
 .hero-badge {
@@ -293,7 +319,6 @@ a {
 
 .hero-title {
   margin: 0 0 1.5rem;
-  max-width: 100%;
   font-size: clamp(1.85rem, 4.5vw, 2.75rem);
   font-weight: 800;
   line-height: 1.15;
@@ -304,9 +329,9 @@ a {
 .hero-title-gradient {
   background: linear-gradient(
     90deg,
-    var(--hero-gradient-start) 0%,
-    var(--hero-gradient-mid) 50%,
-    var(--hero-gradient-end) 100%
+    var(--hero-gradient-start),
+    var(--hero-gradient-mid),
+    var(--hero-gradient-end)
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -335,15 +360,15 @@ a {
   border-radius: 12px;
   font-size: 0.9375rem;
   font-weight: 600;
-  transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+  transition: transform 0.15s, box-shadow 0.2s;
 }
 
 .btn-primary {
   color: #fff;
   background: linear-gradient(
     135deg,
-    var(--btn-primary-start) 0%,
-    var(--btn-primary-end) 100%
+    var(--btn-primary-start),
+    var(--btn-primary-end)
   );
   box-shadow: var(--shadow-primary);
 }
@@ -362,6 +387,18 @@ a {
 .btn-secondary:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+@media (max-width: 768px) {
+  .hero-grid {
+    flex-direction: column;
+  }
+
+  .hero-content,
+  .hero-visual {
+    flex: unset;
+    width: 100%;
+  }
 }
 
 /* Giới thiệu + feature cards */

@@ -5,7 +5,7 @@ import { NewsSection } from "../components/NewsSection.jsx";
 import { usePageVisit } from "../hooks/usePageVisit.js";
 
 export function HomePage() {
-  usePageVisit();
+  //usePageVisit();
 
   return (
     <>
@@ -15,30 +15,39 @@ export function HomePage() {
         <section id="trang-chu" className="hero">
           <div className="container hero-inner">
             <div className="hero-grid">
+
+              {/* 30% TEXT */}
               <div className="hero-content">
-                <p className="hero-badge">Nguồn tin công nghệ hiện đại dành cho kỷ nguyên AI</p>
-                <h1 className="hero-title">
-                  Khám phá thế giới <span className="hero-title-gradient">công nghệ &amp; AI</span> mỗi ngày
-                </h1>
-                <p className="hero-desc">
-                  Trang tin chuyên cập nhật xu hướng trí tuệ nhân tạo, chuyển đổi số, dữ liệu lớn và các đổi mới của
-                  công nghệ 4.0. Giao diện hiện đại, sắc nét và đậm cảm hứng tương lai.
+                <p className="hero-badge">
+                  Nguồn tin công nghệ hiện đại dành cho kỷ nguyên AI
                 </p>
+
+                <h1 className="hero-title">
+                  Khám phá thế giới <span className="hero-title-gradient">công nghệ & AI</span> mỗi ngày
+                </h1>
+
+                <p className="hero-desc">
+                  Trang tin chuyên cập nhật xu hướng trí tuệ nhân tạo...
+                </p>
+
                 <div className="hero-cta">
-                  <a href="#tin-tuc" className="btn btn-primary">
-                    Đọc tin mới
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                      <path d="M5 12h14M13 6l6 6-6 6" />
-                    </svg>
-                  </a>
-                  <a href="#gioi-thieu" className="btn btn-secondary">
-                    Tìm hiểu thêm
-                  </a>
+                  <a href="#tin-tuc" className="btn btn-primary">Đọc tin mới</a>
+                  <a href="#gioi-thieu" className="btn btn-secondary">Tìm hiểu thêm</a>
                 </div>
               </div>
+
+              {/* 70% VIDEO */}
               <div className="hero-visual">
-                <img className="hero-visual__img" src="/images/fotor_2026-04-10_07-57-15.png" alt="Robot automation" />
+                <video
+                  className="hero-video"
+                  src="/videos/0417.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                />
               </div>
+
             </div>
           </div>
         </section>
