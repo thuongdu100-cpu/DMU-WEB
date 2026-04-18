@@ -36,9 +36,6 @@ export function HomePage() {
                   </a>
                 </div>
               </div>
-              <div className="hero-visual">
-                <img className="hero-visual__img" src="/images/fotor_2026-04-10_07-57-15.png" alt="Robot automation" />
-              </div>
             </div>
           </div>
         </section>
