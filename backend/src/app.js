@@ -33,14 +33,18 @@ function buildApp() {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
+  app.set("trust proxy", 1);
+
   app.use(
     session({
       secret: config.sessionSecret,
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        sameSite: "lax"
+        httpOnly: true,
+        secure: false,      // true khi deploy HTTPS
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000  // 7 ngày
       }
     })
   );

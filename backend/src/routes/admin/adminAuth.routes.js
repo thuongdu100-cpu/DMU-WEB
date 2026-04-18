@@ -12,7 +12,7 @@ router.post("/login", async (req, res, next) => {
     if (!result.ok) {
       return res.status(401).json({
         ok: false,
-        message: "T\u00EAn \u0111\u0103ng nh\u1EADp ho\u1EB7c m\u1EADt kh\u1EA9u kh\u00F4ng \u0111\u00FAng."
+        message: "Tên đăng nhập hoặc mật khẩu không đúng."
       });
     }
 
@@ -24,15 +24,17 @@ router.post("/login", async (req, res, next) => {
       delete req.session.adminId;
     }
 
-    return res.json({
-      ok: true,
-      message: "\u0110\u0103ng nh\u1EADp th\u00E0nh c\u00F4ng.",
-      admin: {
-        username: req.session.adminUsername || String(usernameRaw).trim() || null,
-        passwordReturned: false,
-        passwordMessage:
-          "Khong tra mat khau admin qua API vi ly do bao mat. Dung ADMIN_PASSWORD trong file env de quan ly."
-      }
+    // Đảm bảo session được lưu vào store TRƯỚC khi trả response
+    // Tránh race condition khiến request tiếp theo bị 401
+    req.session.save((err) => {
+      if (err) return next(err);
+      return res.json({
+        ok: true,
+        message: "Đăng nhập thành công.",
+        admin: {
+          username: req.session.adminUsername || String(usernameRaw).trim() || null
+        }
+      });
     });
   } catch (e) {
     next(e);
