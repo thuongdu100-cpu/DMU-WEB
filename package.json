@@ -31,7 +31,8 @@
     "cors": "^2.8.6",
     "dotenv": "^16.4.7",
     "express": "^4.22.1",
-    "express-session": "^1.19.0"
+    "express-session": "^1.19.0",
+    "zod": "^4.3.6"
   },
   "prisma": {
     "seed": "node database/prisma/seed.js"

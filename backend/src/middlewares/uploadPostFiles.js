@@ -35,7 +35,8 @@ const videoMime = /^video\/(mp4|webm|quicktime|x-ms-wmv)$/i;
 function isAllowedMediaFieldName(name) {
   if (name == null || typeof name !== "string") return false;
   const n = name.trim();
-  return n === "media" || n === "media[]";
+  if (n === "media" || n === "media[]") return true;
+  return /^media(\[[^[\]]*\])+$/.test(n);
 }
 
 function unlinkQuiet(abs) {
@@ -188,7 +189,7 @@ function uploadPostFiles(req, res, next) {
     if (badFileField) {
       return cleanupAndSend(400, {
         ok: false,
-        message: `Tr\u01B0\u1EDDng file kh\u00F4ng h\u1EE3p l\u1EC7 "${badFileField}" (d\u00F9ng "media" ho\u1EB7c "media[]").`
+        message: `Tr\u01B0\u1EDDng file kh\u00F4ng h\u1EE3p l\u1EC7 "${badFileField}" (d\u00F9ng "media", "media[]" ho\u1EB7c "media[...]").`
       });
     }
 
