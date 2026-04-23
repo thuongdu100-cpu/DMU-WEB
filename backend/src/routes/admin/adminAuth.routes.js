@@ -1,5 +1,6 @@
 const express = require("express");
 const { verifyAdminCredentials } = require("../../services/adminAuth.service");
+const { prisma } = require("../../../db/prisma");
 
 const router = express.Router();
 
@@ -23,6 +24,7 @@ router.post("/login", async (req, res, next) => {
     } else {
       delete req.session.adminId;
     }
+    req.session.adminRole = result.role || "editor";
 
     // Đảm bảo session được lưu vào store TRƯỚC khi trả response
     // Tránh race condition khiến request tiếp theo bị 401
@@ -32,7 +34,9 @@ router.post("/login", async (req, res, next) => {
         ok: true,
         message: "Đăng nhập thành công.",
         admin: {
-          username: req.session.adminUsername || String(usernameRaw).trim() || null
+          username: req.session.adminUsername || String(usernameRaw).trim() || null,
+          role: req.session.adminRole || null,
+          id: req.session.adminId ?? null
         }
       });
     });
@@ -47,14 +51,31 @@ router.post("/logout", (req, res) => {
   });
 });
 
-router.get("/me", (req, res) => {
-  const admin = !!(req.session && req.session.admin);
-  res.json({
-    ok: true,
-    admin,
-    username: admin && req.session.adminUsername ? req.session.adminUsername : null,
-    passwordReturned: false
-  });
+router.get("/me", async (req, res, next) => {
+  try {
+    const admin = !!(req.session && req.session.admin);
+    let role = admin && req.session.adminRole ? req.session.adminRole : null;
+    const id = admin && req.session.adminId ? req.session.adminId : null;
+    if (admin && id && !role) {
+      const u = await prisma.admins.findUnique({ where: { id: Number(id) } });
+      if (u) {
+        let r = String(u.role || "").trim().toLowerCase();
+        if (r === "admin") r = "owner";
+        role = r || "editor";
+        req.session.adminRole = role;
+      }
+    }
+    res.json({
+      ok: true,
+      admin,
+      username: admin && req.session.adminUsername ? req.session.adminUsername : null,
+      role,
+      id,
+      passwordReturned: false
+    });
+  } catch (e) {
+    next(e);
+  }
 });
 
 module.exports = router;

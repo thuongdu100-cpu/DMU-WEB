@@ -123,6 +123,7 @@ function baseFromRow(a) {
     thumbnail: a.thumbnail || null,
     view_count: a.view_count || 0,
     category_id: a.category_id || null,
+    author_id: a.author_id != null ? a.author_id : null,
     published_at: a.published_at || null,
     created_at: a.created_at,
     updated_at: a.updated_at
@@ -176,6 +177,7 @@ function toApiArticle(base, layoutRows) {
     thumbnail: base.thumbnail || null,
     view_count: base.view_count || 0,
     category_id: base.category_id || null,
+    author_id: base.author_id != null ? base.author_id : null,
     published_at: base.published_at ? toIso(base.published_at) : null,
     media,
     contentLayout,
@@ -245,8 +247,15 @@ function buildLayoutFromMedia(content, media) {
 /**
  * Danh sách tất cả bài viết (dành cho admin, không lọc status).
  */
-async function listArticlesAdmin() {
+/**
+ * @param {{ authorIdEq?: number | null }} [filters]
+ */
+async function listArticlesAdmin(filters = {}) {
+  const authorIdEq = filters.authorIdEq;
+  const where =
+    authorIdEq != null && Number.isInteger(authorIdEq) && authorIdEq > 0 ? { author_id: authorIdEq } : {};
   const rows = await prisma.articles.findMany({
+    where,
     orderBy: { updated_at: "desc" },
     include: { content_layout: layoutInclude }
   });

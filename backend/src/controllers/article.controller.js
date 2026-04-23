@@ -16,7 +16,7 @@ function sendServiceError(res, err) {
 
 async function listAdmin(req, res, next) {
   try {
-    const data = await articleService.listAdmin(req.query);
+    const data = await articleService.listAdmin(req);
     res.json(data);
   } catch (err) {
     if (err?.code) return sendServiceError(res, err);
@@ -26,7 +26,7 @@ async function listAdmin(req, res, next) {
 
 async function getAdmin(req, res, next) {
   try {
-    const data = await articleService.getAdmin(req.params.id);
+    const data = await articleService.getAdmin(req, req.params.id);
     res.json(data);
   } catch (err) {
     if (err?.code) return sendServiceError(res, err);
@@ -64,7 +64,7 @@ async function updateFromMultipart(req, res, next) {
 
 async function remove(req, res, next) {
   try {
-    const data = await articleService.remove(req.params.id);
+    const data = await articleService.remove(req, req.params.id);
     res.json(data);
   } catch (err) {
     if (err?.code) return sendServiceError(res, err);

@@ -18,6 +18,7 @@ const analyticsRoutes = require("./routes/analytics.routes");
 const adminAuthRoutes = require("./routes/admin/adminAuth.routes");
 const adminStatsRoutes = require("./routes/admin/adminStats.routes");
 const adminArticlesRoutes = require("./routes/admin/adminArticles.routes");
+const adminUsersRoutes = require("./routes/admin/adminUsers.routes");
 const { errorHandler } = require("./middlewares/errorHandler");
 
 function ensureUploadDirs() {
@@ -57,6 +58,7 @@ function buildApp() {
   app.use("/api/analytics", analyticsRoutes);
   app.use("/api/admin/auth", adminAuthRoutes);
   app.use("/api/admin", adminStatsRoutes);
+  app.use("/api/admin", adminUsersRoutes);
   app.use("/api/admin", adminArticlesRoutes);
   // Public
   app.use("/api/media", mediaRoutes);

@@ -12,7 +12,7 @@ const { prisma } = require("../../db/prisma");
  * Xác thực thông tin đăng nhập admin.
  * @param {string} usernameRaw - Username gửi lên từ client
  * @param {string} password    - Password gửi lên từ client (plaintext)
- * @returns {Promise<{ ok: boolean, adminId?: number, displayUsername?: string }>}
+ * @returns {Promise<{ ok: boolean, adminId?: number, displayUsername?: string, role?: string }>}
  */
 async function verifyAdminCredentials(usernameRaw, password) {
   const username = String(usernameRaw || "").trim().toLowerCase();
@@ -23,13 +23,19 @@ async function verifyAdminCredentials(usernameRaw, password) {
   const admin = await prisma.admins.findUnique({ where: { username } });
   if (!admin) return { ok: false };
 
+  const role = String(admin.role || "editor").trim().toLowerCase();
+  if (role === "bot") {
+    return { ok: false };
+  }
+
   const passwordMatch = await bcrypt.compare(pass, admin.password);
   if (!passwordMatch) return { ok: false };
 
   return {
     ok: true,
     adminId: admin.id,
-    displayUsername: String(usernameRaw).trim() || username
+    displayUsername: String(usernameRaw).trim() || username,
+    role: role === "admin" ? "owner" : role
   };
 }
 

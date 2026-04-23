@@ -434,8 +434,121 @@ a {
 .feature-cards--intro {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(1rem, 2vw, 1.75rem);
+  gap: clamp(1rem, 2vw, 1.5rem);
   align-items: stretch;
+  position: relative;
+  z-index: 1;
+}
+
+/* Khung 4 thẻ giới thiệu — layout giống mockup: nền tối, icon teal, glow tím trái */
+.intro-feature-cards-wrap {
+  position: relative;
+  isolation: isolate;
+  margin-top: 0.25rem;
+}
+
+.intro-feature-cards-wrap::before {
+  content: "";
+  position: absolute;
+  left: -6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(380px, 52vw);
+  height: min(300px, 88%);
+  background: radial-gradient(
+    ellipse 70% 60% at 40% 50%,
+    rgba(192, 132, 252, 0.32) 0%,
+    rgba(236, 72, 153, 0.14) 42%,
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.feature-cards--intro .feature-card {
+  padding: clamp(1.5rem, 2.8vw, 2rem);
+  border-radius: 1.25rem;
+  text-align: left;
+  background: #111827;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.38);
+}
+
+.feature-cards--intro .feature-card::after {
+  display: none;
+}
+
+.feature-cards--intro .feature-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(34, 211, 238, 0.22);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(34, 211, 238, 0.06);
+}
+
+.feature-cards--intro .feature-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.1);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+
+.feature-cards--intro .feature-card:hover .feature-card-icon {
+  background: rgba(34, 211, 238, 0.14);
+  border-color: rgba(34, 211, 238, 0.35);
+  transform: scale(1.04);
+}
+
+.feature-cards--intro .feature-title {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.02rem, 1.2vw, 1.125rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.feature-cards--intro .feature-text {
+  margin: 0;
+  font-size: clamp(0.875rem, 1.05vw, 0.9375rem);
+  line-height: 1.65;
+  color: #9ca3af;
+}
+
+[data-theme="light"] .intro-feature-cards-wrap::before {
+  opacity: 0.22;
+}
+
+[data-theme="light"] .feature-cards--intro .feature-card {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 36px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .feature-cards--intro .feature-card:hover {
+  border-color: rgba(2, 132, 199, 0.22);
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .feature-cards--intro .feature-title {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .feature-cards--intro .feature-text {
+  color: var(--text-body);
+}
+
+[data-theme="light"] .feature-cards--intro .feature-card-icon {
+  color: #0284c7;
+  background: rgba(14, 165, 233, 0.12);
+  border-color: rgba(2, 132, 199, 0.22);
 }
 
 .section-label {
@@ -588,7 +701,15 @@ a {
     transform: none;
   }
 
+  .feature-cards--intro .feature-card:hover {
+    transform: none;
+  }
+
   .feature-card:hover .feature-icon {
+    transform: none;
+  }
+
+  .feature-cards--intro .feature-card:hover .feature-card-icon {
     transform: none;
   }
 }

@@ -8,7 +8,7 @@ import { layoutPayloadFromBlocks, plainTextFromBlocks } from "../utils/articleLa
 /** Phản hồi từ server khác DMU busboy (thường do proxy trỏ nhầm cổng / API cũ). */
 const UNEXPECTED_FIELD_HINT =
   "Lỗi “Unexpected field” thường do trình duyệt đang gọi nhầm API không phải bản DMU (busboy). " +
-  "Mở /api/health trên cùng host (vd. http://localhost:5173/api/health) — trường uploadParser phải là busboy. " +
+  "Mở /api/health trên cùng host với trang (vd. :5173 khi dev Vite) — trường uploadParser phải là busboy. " +
   "Nếu không: chỉ chạy API trên 3001 (`$env:PORT=3001; npm run server` hoặc `npm run dev` từ thư mục gốc dự án), " +
   "và đảm bảo Vite proxy trỏ tới đúng cổng đó (mặc định đã là 3001; file frontend/.env.development).";
 
@@ -26,7 +26,7 @@ function humanizeUploadErrorMessage(raw) {
 const NETWORK_HINT =
   "Không kết nối được API khi tải file lên (Failed to fetch). " +
   "Chạy backend (mặc định dev: cổng 3001): từ thư mục gốc `npm run dev` hoặc `npm run server` với PORT=3001. " +
-  "Nếu chỉ chạy Vite trong frontend, cần API đang lắng nghe trùng với VITE_API_TARGET (xem frontend/.env.development).";
+  "Nếu chỉ chạy Vite trong frontend, cần API đang lắng nghe đúng cổng proxy (mặc định 3001; xem frontend/.env.development và vite.config.js).";
 
 /**
  * @param {FormData} formData

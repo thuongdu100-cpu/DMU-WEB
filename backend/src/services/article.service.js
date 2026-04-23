@@ -187,15 +187,40 @@ function parseCategoryId(raw) {
   return n;
 }
 
-function assertAdminSession(session) {
-  const adminId = Number(session?.adminId);
+/**
+ * @param {import('express').Request} req
+ * @returns {{ adminId: number, role: string }}
+ */
+function getAdminAuth(req) {
+  if (req.authFromBearer && Number.isInteger(Number(req.authAdminId)) && Number(req.authAdminId) > 0) {
+    return { adminId: Number(req.authAdminId), role: String(req.authAdminRole || "bot").toLowerCase() };
+  }
+  const adminId = Number(req.session?.adminId);
   if (!Number.isInteger(adminId) || adminId <= 0) {
     throw createServiceError("Phiên đăng nhập quản trị không hợp lệ.", {
       status: 401,
       code: "INVALID_ADMIN_SESSION"
     });
   }
-  return adminId;
+  let role = String(req.session?.adminRole || "").toLowerCase();
+  if (role === "admin") role = "owner";
+  if (!role) role = "editor";
+  return { adminId, role };
+}
+
+/**
+ * @param {{ adminId: number, role: string }} auth
+ * @param {number | null | undefined} articleAuthorId
+ * @returns {boolean}
+ */
+function canManageArticle(auth, articleAuthorId) {
+  if (auth.role === "owner" || auth.role === "bot" || auth.role === "moderator") return true;
+  const aid = articleAuthorId == null ? null : Number(articleAuthorId);
+  if (auth.role === "editor") {
+    if (aid == null || !Number.isInteger(aid)) return true;
+    return aid === auth.adminId;
+  }
+  return false;
 }
 
 function safeError(err, fallback) {
@@ -296,9 +321,16 @@ function buildFromContentLayout(layout, pool) {
   };
 }
 
-async function listAdmin(query) {
-  const { page, limit, skip } = normalizePagination(query);
-  const all = await articleModel.listArticlesAdmin();
+/**
+ * @param {import('express').Request} req
+ */
+async function listAdmin(req) {
+  const { page, limit, skip } = normalizePagination(req.query);
+  const auth = getAdminAuth(req);
+  const authorIdEq = auth.role === "editor" ? auth.adminId : undefined;
+  const all = await articleModel.listArticlesAdmin(
+    authorIdEq != null ? { authorIdEq } : {}
+  );
   const normalized = all.map(normalizeArticle);
   const articles = normalized.slice(skip, skip + limit);
   return {
@@ -308,9 +340,17 @@ async function listAdmin(query) {
   };
 }
 
-async function getAdmin(id) {
+/**
+ * @param {import('express').Request} req
+ * @param {string|number} id
+ */
+async function getAdmin(req, id) {
+  const auth = getAdminAuth(req);
   const article = await articleModel.getArticleById(id);
   if (!article) {
+    throw createServiceError("Không tìm thấy bài viết.", { status: 404, code: "ARTICLE_NOT_FOUND" });
+  }
+  if (!canManageArticle(auth, article.author_id)) {
     throw createServiceError("Không tìm thấy bài viết.", { status: 404, code: "ARTICLE_NOT_FOUND" });
   }
   return { ok: true, article: normalizeArticle(article) };
@@ -319,7 +359,8 @@ async function getAdmin(id) {
 async function createFromMultipart(req) {
   const uploadedFiles = req.files || [];
   try {
-    const adminId = assertAdminSession(req.session);
+    const auth = getAdminAuth(req);
+    const { adminId } = auth;
     const contentLayout = parseJsonField(req.body?.contentLayout, "contentLayout");
     const parsed = createSchema.safeParse({
       title: req.body?.title,
@@ -356,13 +397,21 @@ async function createFromMultipart(req) {
 
     ensureNoUnusedFiles(pool);
 
+    let status = parseStatus(req.body?.status, { required: false });
+    if (status === undefined) {
+      status = auth.role === "editor" ? "draft" : "published";
+    }
+    if (auth.role === "editor" && status === "published") {
+      status = "draft";
+    }
+
     const created = await articleModel.createArticle({
       title: sanitizeText(req.body?.title),
       content,
       excerpt: sanitizeText(req.body?.excerpt),
       media: mediaList,
       contentLayout: contentLayoutPayload,
-      status: parseStatus(req.body?.status, { required: true }),
+      status,
       authorId: adminId,
       categoryId: parseCategoryId(req.body?.categoryId),
       thumbnail: sanitizeText(req.body?.thumbnail) || undefined
@@ -378,9 +427,12 @@ async function createFromMultipart(req) {
 async function updateFromMultipart(req) {
   const uploadedFiles = req.files || [];
   try {
-    assertAdminSession(req.session);
+    const auth = getAdminAuth(req);
     const prev = await articleModel.getArticleById(req.params.id);
     if (!prev) {
+      throw createServiceError("Không tìm thấy bài viết.", { status: 404, code: "ARTICLE_NOT_FOUND" });
+    }
+    if (!canManageArticle(auth, prev.author_id)) {
       throw createServiceError("Không tìm thấy bài viết.", { status: 404, code: "ARTICLE_NOT_FOUND" });
     }
 
@@ -407,7 +459,13 @@ async function updateFromMultipart(req) {
     if (req.body?.title !== undefined) patch.title = sanitizeText(req.body.title);
     if (req.body?.content !== undefined) patch.content = String(req.body.content ?? "");
     if (req.body?.excerpt !== undefined) patch.excerpt = sanitizeText(req.body.excerpt);
-    if (req.body?.status !== undefined) patch.status = parseStatus(req.body.status);
+    if (req.body?.status !== undefined) {
+      let st = parseStatus(req.body.status);
+      if (auth.role === "editor" && st === "published") {
+        st = "draft";
+      }
+      patch.status = st;
+    }
     if (req.body?.thumbnail !== undefined) patch.thumbnail = sanitizeText(req.body.thumbnail) || null;
     if (req.body?.categoryId !== undefined) patch.categoryId = parseCategoryId(req.body.categoryId) ?? null;
 
@@ -436,7 +494,19 @@ async function updateFromMultipart(req) {
   }
 }
 
-async function remove(id) {
+/**
+ * @param {import('express').Request} req
+ * @param {string|number} id
+ */
+async function remove(req, id) {
+  const auth = getAdminAuth(req);
+  const prev = await articleModel.getArticleById(id);
+  if (!prev) {
+    throw createServiceError("Không tìm thấy bài viết.", { status: 404, code: "ARTICLE_NOT_FOUND" });
+  }
+  if (!canManageArticle(auth, prev.author_id)) {
+    throw createServiceError("Không tìm thấy bài viết.", { status: 404, code: "ARTICLE_NOT_FOUND" });
+  }
   const deleted = await articleModel.deleteArticle(id);
   if (!deleted) {
     throw createServiceError("Không tìm thấy bài viết.", { status: 404, code: "ARTICLE_NOT_FOUND" });

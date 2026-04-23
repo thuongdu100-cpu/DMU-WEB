@@ -9,6 +9,7 @@ import { AdminArticleNew } from "./admin/AdminArticleNew.jsx";
 import { AdminArticles } from "./admin/AdminArticles.jsx";
 import { AdminArticleView } from "./admin/AdminArticleView.jsx";
 import { AdminArticleEdit } from "./admin/AdminArticleEdit.jsx";
+import { AdminUsers } from "./admin/AdminUsers.jsx";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="article/new" element={<AdminArticleNew />} />
           <Route path="articles" element={<AdminArticles />} />
+          <Route path="users" element={<AdminUsers />} />
           <Route path="article/:id" element={<AdminArticleView />} />
           <Route path="article/:id/edit" element={<AdminArticleEdit />} />
         </Route>

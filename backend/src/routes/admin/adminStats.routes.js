@@ -1,10 +1,12 @@
 const express = require("express");
 const { requireAdmin } = require("../../middlewares/requireAdmin");
+const { refreshSessionAdminRole } = require("../../middlewares/refreshSessionAdminRole");
 const visits = require("../../services/visits.service");
 const articleModel = require("../../models/article.model");
 
 const router = express.Router();
 router.use(requireAdmin);
+router.use(refreshSessionAdminRole);
 
 const DEFAULT_WEEKS = 4;
 const MAX_WEEKS = 52;
