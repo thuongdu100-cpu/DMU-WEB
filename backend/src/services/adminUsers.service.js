@@ -1,10 +1,11 @@
 /**
- * Quản lý tài khoản: owner toàn quyền; moderator chỉ quản editor (tài khoản đăng bài).
+ * Quản lý tài khoản: chỉ admin tạo / sửa / xoá editor & contributor.
  */
 "use strict";
 
 const bcrypt = require("bcryptjs");
 const { prisma } = require("../../db/prisma");
+const { normalizeAdminRole } = require("../utils/adminRoles");
 
 const USERNAME_RE = /^[a-z0-9_]{3,32}$/;
 
@@ -20,37 +21,31 @@ function svcErr(message, { status = 400, code = "BAD_REQUEST" } = {}) {
 }
 
 /**
- * Chuẩn hoá role từ DB / session.
  * @param {string | undefined} role
- * @returns {"owner"|"moderator"|"editor"|"bot"|"unknown"}
+ * @returns {"admin"|"editor"|"contributor"|"unknown"}
  */
 function normalizeRole(role) {
-  const r = String(role || "").trim().toLowerCase();
-  if (r === "admin" || r === "owner") return "owner";
-  if (r === "moderator") return "moderator";
-  if (r === "editor") return "editor";
-  if (r === "bot") return "bot";
+  const n = normalizeAdminRole(role);
+  if (n === "admin" || n === "editor" || n === "contributor") return n;
   return "unknown";
 }
 
 /**
  * @param {string | undefined} actorRoleRaw
- * @returns {"owner"|"moderator"|"editor"|"bot"|"unknown"}
+ * @returns {"admin"|"editor"|"contributor"|"unknown"}
  */
 function normalizeActorRole(actorRoleRaw) {
   return normalizeRole(actorRoleRaw);
 }
 
 /**
- * @param {"owner"|"moderator"|"editor"|"bot"|"unknown"} actorRole
+ * @param {"admin"|"editor"|"contributor"|"unknown"} actorRole
  */
 async function listUsers(actorRole) {
-  const where =
-    actorRole === "moderator"
-      ? { role: "editor" }
-      : {};
+  if (actorRole !== "admin") {
+    throw svcErr("Chỉ admin mới xem được danh sách tài khoản.", { status: 403, code: "FORBIDDEN" });
+  }
   const rows = await prisma.admins.findMany({
-    where,
     orderBy: { id: "asc" },
     select: { id: true, username: true, role: true, created_at: true }
   });
@@ -66,27 +61,24 @@ async function listUsers(actorRole) {
 }
 
 /**
- * @param {"owner"|"moderator"|"editor"|"bot"|"unknown"} actorRole
+ * @param {"admin"|"editor"|"contributor"|"unknown"} actorRole
  * @param {{ username: string, password: string, role?: string }} body
  */
 async function createUser(actorRole, body) {
+  if (actorRole !== "admin") {
+    throw svcErr("Chỉ admin mới được tạo tài khoản.", { status: 403, code: "FORBIDDEN" });
+  }
+
   const username = String(body?.username || "").trim().toLowerCase();
   const password = String(body?.password || "");
-  const roleRaw = String(body?.role || "editor").trim().toLowerCase();
+  const roleRaw = String(body?.role || "contributor").trim().toLowerCase();
 
-  let role = "editor";
-  if (actorRole === "moderator") {
-    if (roleRaw !== "editor") {
-      throw svcErr("Moderator chỉ được tạo tài khoản editor (đăng bài).", { code: "FORBIDDEN_ROLE_CREATE" });
-    }
-    role = "editor";
-  } else if (actorRole === "owner") {
-    if (roleRaw === "bot") role = "bot";
-    else if (roleRaw === "moderator") role = "moderator";
-    else role = "editor";
-  } else {
-    throw svcErr("Không có quyền tạo tài khoản.", { status: 403, code: "FORBIDDEN" });
+  if (roleRaw !== "editor" && roleRaw !== "contributor") {
+    throw svcErr('role chỉ được là "editor" (người duyệt) hoặc "contributor" (người viết).', {
+      code: "INVALID_ROLE"
+    });
   }
+  const role = roleRaw === "editor" ? "editor" : "contributor";
 
   if (!USERNAME_RE.test(username)) {
     throw svcErr("Tên đăng nhập: 3–32 ký tự, chữ thường, số và dấu gạch dưới.", { code: "INVALID_USERNAME" });
@@ -112,13 +104,22 @@ async function createUser(actorRole, body) {
   }
 }
 
+async function countCanonicalAdmins() {
+  const rows = await prisma.admins.findMany({ select: { role: true } });
+  return rows.filter((r) => normalizeAdminRole(r.role) === "admin").length;
+}
+
 /**
- * @param {"owner"|"moderator"|"editor"|"bot"|"unknown"} actorRole
+ * @param {"admin"|"editor"|"contributor"|"unknown"} actorRole
  * @param {number} actorId
  * @param {number} id
  * @param {{ password?: string, role?: string }} body
  */
 async function updateUser(actorRole, actorId, id, body) {
+  if (actorRole !== "admin") {
+    throw svcErr("Chỉ admin mới được sửa tài khoản.", { status: 403, code: "FORBIDDEN" });
+  }
+
   const targetId = Number(id);
   if (!Number.isInteger(targetId) || targetId <= 0) {
     throw svcErr("id không hợp lệ.", { code: "INVALID_ID" });
@@ -129,15 +130,6 @@ async function updateUser(actorRole, actorId, id, body) {
 
   const targetRole = normalizeRole(target.role);
 
-  if (actorRole === "moderator") {
-    if (targetRole !== "editor") {
-      throw svcErr("Moderator chỉ được sửa tài khoản editor.", { status: 403, code: "FORBIDDEN_TARGET" });
-    }
-    if (body?.role !== undefined) {
-      throw svcErr("Moderator không được đổi role.", { status: 403, code: "FORBIDDEN_ROLE_PATCH" });
-    }
-  }
-
   const patch = {};
   if (body?.password !== undefined) {
     const password = String(body.password || "");
@@ -145,33 +137,22 @@ async function updateUser(actorRole, actorId, id, body) {
     patch.password = bcrypt.hashSync(password, 10);
   }
 
-  if (body?.role !== undefined && actorRole === "owner") {
+  if (body?.role !== undefined) {
     const next = String(body.role || "").trim().toLowerCase();
-    const nr =
-      next === "bot"
-        ? "bot"
-        : next === "editor"
-          ? "editor"
-          : next === "moderator"
-            ? "moderator"
-            : next === "owner"
-              ? "owner"
-              : "";
+    const nr = next === "editor" ? "editor" : next === "contributor" ? "contributor" : next === "admin" ? "admin" : "";
     if (!nr) {
-      throw svcErr('role chỉ nhận "owner", "moderator", "editor" hoặc "bot".', { code: "INVALID_ROLE" });
+      throw svcErr('role chỉ nhận "admin", "editor" hoặc "contributor".', { code: "INVALID_ROLE" });
     }
-    if (targetId === actorId && nr !== "owner") {
-      throw svcErr("Không thể hạ quyền chính tài khoản owner đang đăng nhập.", { code: "FORBIDDEN_SELF_DEMOTE" });
+    if (targetId === actorId && nr !== "admin") {
+      throw svcErr("Không thể hạ quyền chính tài khoản admin đang đăng nhập.", { code: "FORBIDDEN_SELF_DEMOTE" });
     }
-    if (targetRole === "owner" && nr !== "owner") {
-      const owners = await prisma.admins.count({
-        where: { OR: [{ role: "owner" }, { role: "admin" }] }
-      });
-      if (owners <= 1) {
-        throw svcErr("Phải còn ít nhất một tài khoản owner.", { code: "FORBIDDEN_LAST_OWNER" });
+    if (targetRole === "admin" && nr !== "admin") {
+      const admins = await countCanonicalAdmins();
+      if (admins <= 1) {
+        throw svcErr("Phải còn ít nhất một tài khoản admin.", { code: "FORBIDDEN_LAST_ADMIN" });
       }
     }
-    patch.role = nr === "owner" ? "owner" : nr;
+    patch.role = nr;
   }
 
   if (Object.keys(patch).length === 0) {
@@ -196,11 +177,15 @@ async function updateUser(actorRole, actorId, id, body) {
 }
 
 /**
- * @param {"owner"|"moderator"|"editor"|"bot"|"unknown"} actorRole
+ * @param {"admin"|"editor"|"contributor"|"unknown"} actorRole
  * @param {number} actorId
  * @param {number} id
  */
 async function deleteUser(actorRole, actorId, id) {
+  if (actorRole !== "admin") {
+    throw svcErr("Chỉ admin mới được xoá tài khoản.", { status: 403, code: "FORBIDDEN" });
+  }
+
   const targetId = Number(id);
   if (!Number.isInteger(targetId) || targetId <= 0) {
     throw svcErr("id không hợp lệ.", { code: "INVALID_ID" });
@@ -214,20 +199,10 @@ async function deleteUser(actorRole, actorId, id) {
 
   const targetRole = normalizeRole(target.role);
 
-  if (actorRole === "moderator") {
-    if (targetRole !== "editor") {
-      throw svcErr("Moderator chỉ được xoá tài khoản editor.", { status: 403, code: "FORBIDDEN_DELETE" });
-    }
-  }
-
-  if (target.username === "ai-bot") {
-    throw svcErr("Không xoá được tài khoản AI mặc định (ai-bot).", { code: "FORBIDDEN_AI_BOT" });
-  }
-
-  if (targetRole === "owner") {
-    const owners = await prisma.admins.count({ where: { OR: [{ role: "owner" }, { role: "admin" }] } });
-    if (owners <= 1) {
-      throw svcErr("Không thể xoá tài khoản owner duy nhất.", { code: "FORBIDDEN_LAST_OWNER" });
+  if (targetRole === "admin") {
+    const admins = await countCanonicalAdmins();
+    if (admins <= 1) {
+      throw svcErr("Không thể xoá tài khoản admin duy nhất.", { code: "FORBIDDEN_LAST_ADMIN" });
     }
   }
 

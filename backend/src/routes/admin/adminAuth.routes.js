@@ -1,6 +1,16 @@
+const path = require("path");
 const express = require("express");
 const { verifyAdminCredentials } = require("../../services/adminAuth.service");
 const { prisma } = require("../../../db/prisma");
+
+/** @type {{ signAccessToken: (id: number) => string } | null} */
+let jwtAccess = null;
+try {
+  // eslint-disable-next-line import/no-dynamic-require
+  jwtAccess = require(path.join(__dirname, "../../../dist-cjs/auth/jwtAccess"));
+} catch {
+  jwtAccess = null;
+}
 
 const router = express.Router();
 
@@ -24,12 +34,20 @@ router.post("/login", async (req, res, next) => {
     } else {
       delete req.session.adminId;
     }
-    req.session.adminRole = result.role || "editor";
+    req.session.adminRole = result.role || "contributor";
 
     // Đảm bảo session được lưu vào store TRƯỚC khi trả response
     // Tránh race condition khiến request tiếp theo bị 401
     req.session.save((err) => {
       if (err) return next(err);
+      let token = null;
+      if (jwtAccess && result.adminId != null) {
+        try {
+          token = jwtAccess.signAccessToken(result.adminId);
+        } catch {
+          token = null;
+        }
+      }
       return res.json({
         ok: true,
         message: "Đăng nhập thành công.",
@@ -37,7 +55,8 @@ router.post("/login", async (req, res, next) => {
           username: req.session.adminUsername || String(usernameRaw).trim() || null,
           role: req.session.adminRole || null,
           id: req.session.adminId ?? null
-        }
+        },
+        ...(token ? { token } : {})
       });
     });
   } catch (e) {
@@ -59,9 +78,8 @@ router.get("/me", async (req, res, next) => {
     if (admin && id && !role) {
       const u = await prisma.admins.findUnique({ where: { id: Number(id) } });
       if (u) {
-        let r = String(u.role || "").trim().toLowerCase();
-        if (r === "admin") r = "owner";
-        role = r || "editor";
+        const { normalizeAdminRole } = require("../../utils/adminRoles");
+        role = normalizeAdminRole(u.role);
         req.session.adminRole = role;
       }
     }

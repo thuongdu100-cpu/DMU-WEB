@@ -42,9 +42,13 @@ function slugify(text) {
   return s ? `${s}-${suffix}` : suffix;
 }
 
-/** Chuẩn hoá trạng thái bài viết: chỉ chấp nhận "draft" hoặc "published". */
+const VALID_STATUSES = new Set(["draft", "pending", "published", "rejected"]);
+
+/** Chuẩn hoá trạng thái bài viết (draft | pending | published | rejected). */
 function normalizeStatus(raw) {
-  return String(raw ?? "published").trim().toLowerCase() === "draft" ? "draft" : "published";
+  const s = String(raw ?? "").trim().toLowerCase();
+  if (VALID_STATUSES.has(s)) return s;
+  return "draft";
 }
 
 /** Nếu status không được truyền → mặc định "published". */
@@ -397,8 +401,12 @@ async function updateArticle(rawId, { title, content, excerpt, media, contentLay
     };
     if (thumbnail !== undefined) updateData.thumbnail = thumbnail || null;
     if (categoryId !== undefined) updateData.category_id = toIntOrNull(categoryId);
-    if (next.status === "published" && !prev.published_at) {
-      updateData.published_at = now;
+    if (next.status === "published") {
+      if (!prev.published_at) {
+        updateData.published_at = now;
+      }
+    } else if (next.status === "rejected") {
+      updateData.published_at = null;
     }
     await tx.articles.update({ where: { id: prev.id }, data: updateData });
 

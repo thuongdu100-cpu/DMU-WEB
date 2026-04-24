@@ -22,15 +22,6 @@ module.exports = {
   adminUsername: (process.env.ADMIN_USERNAME || "admin").trim().toLowerCase(),
   adminPassword: process.env.ADMIN_PASSWORD || "admin123",
   sessionSecret: process.env.SESSION_SECRET || "dmu-admin-session-change-me",
-  /** Bearer token (Authorization: Bearer …) để AI/script gọi POST/PUT/DELETE bài viết như admin bot */
-  aiPublishBearerToken: String(process.env.AI_PUBLISH_BEARER_TOKEN || "").trim(),
-  /** id hàng `admins` role=bot (mặc định user `ai-bot` từ seed). Có thể ghi đè bằng env. */
-  aiPublishAdminId: (() => {
-    const raw = String(process.env.AI_PUBLISH_ADMIN_ID || "").trim();
-    if (!raw) return null;
-    const n = Number.parseInt(raw, 10);
-    return Number.isInteger(n) && n > 0 ? n : null;
-  })(),
   database: {
     url: (process.env.DATABASE_URL || "").trim()
   },

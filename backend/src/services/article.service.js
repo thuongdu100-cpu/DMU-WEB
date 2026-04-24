@@ -4,6 +4,7 @@ const fs = require("fs");
 const { z } = require("zod");
 const articleModel = require("../models/article.model");
 const { translateErrorString } = require("../utils/vietnameseErrors");
+const { normalizeAdminRole } = require("../utils/adminRoles");
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -142,8 +143,10 @@ function parseStatus(raw, { required = false } = {}) {
     return undefined;
   }
   const status = sanitizeText(raw).toLowerCase();
-  if (status === "draft" || status === "published") return status;
-  throw createServiceError('status chỉ chấp nhận "draft" hoặc "published".', {
+  if (status === "draft" || status === "published" || status === "pending" || status === "rejected") {
+    return status;
+  }
+  throw createServiceError('status chỉ chấp nhận "draft", "pending", "published" hoặc "rejected".', {
     code: "INVALID_STATUS"
   });
 }
@@ -192,9 +195,6 @@ function parseCategoryId(raw) {
  * @returns {{ adminId: number, role: string }}
  */
 function getAdminAuth(req) {
-  if (req.authFromBearer && Number.isInteger(Number(req.authAdminId)) && Number(req.authAdminId) > 0) {
-    return { adminId: Number(req.authAdminId), role: String(req.authAdminRole || "bot").toLowerCase() };
-  }
   const adminId = Number(req.session?.adminId);
   if (!Number.isInteger(adminId) || adminId <= 0) {
     throw createServiceError("Phiên đăng nhập quản trị không hợp lệ.", {
@@ -202,9 +202,7 @@ function getAdminAuth(req) {
       code: "INVALID_ADMIN_SESSION"
     });
   }
-  let role = String(req.session?.adminRole || "").toLowerCase();
-  if (role === "admin") role = "owner";
-  if (!role) role = "editor";
+  const role = normalizeAdminRole(req.session?.adminRole);
   return { adminId, role };
 }
 
@@ -214,9 +212,9 @@ function getAdminAuth(req) {
  * @returns {boolean}
  */
 function canManageArticle(auth, articleAuthorId) {
-  if (auth.role === "owner" || auth.role === "bot" || auth.role === "moderator") return true;
+  if (auth.role === "admin" || auth.role === "editor") return true;
   const aid = articleAuthorId == null ? null : Number(articleAuthorId);
-  if (auth.role === "editor") {
+  if (auth.role === "contributor") {
     if (aid == null || !Number.isInteger(aid)) return true;
     return aid === auth.adminId;
   }
@@ -327,7 +325,7 @@ function buildFromContentLayout(layout, pool) {
 async function listAdmin(req) {
   const { page, limit, skip } = normalizePagination(req.query);
   const auth = getAdminAuth(req);
-  const authorIdEq = auth.role === "editor" ? auth.adminId : undefined;
+  const authorIdEq = auth.role === "contributor" ? auth.adminId : undefined;
   const all = await articleModel.listArticlesAdmin(
     authorIdEq != null ? { authorIdEq } : {}
   );
@@ -399,10 +397,11 @@ async function createFromMultipart(req) {
 
     let status = parseStatus(req.body?.status, { required: false });
     if (status === undefined) {
-      status = auth.role === "editor" ? "draft" : "published";
+      if (auth.role === "contributor") status = "draft";
+      else status = "published";
     }
-    if (auth.role === "editor" && status === "published") {
-      status = "draft";
+    if (auth.role === "contributor" && status === "published") {
+      status = "pending";
     }
 
     const created = await articleModel.createArticle({
@@ -461,8 +460,9 @@ async function updateFromMultipart(req) {
     if (req.body?.excerpt !== undefined) patch.excerpt = sanitizeText(req.body.excerpt);
     if (req.body?.status !== undefined) {
       let st = parseStatus(req.body.status);
-      if (auth.role === "editor" && st === "published") {
-        st = "draft";
+      if (auth.role === "contributor") {
+        if (st === "published") st = "pending";
+        if (st === "rejected") st = "draft";
       }
       patch.status = st;
     }

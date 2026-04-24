@@ -2,7 +2,6 @@
 
 const path = require("path");
 const fs = require("fs");
-const crypto = require("crypto");
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcryptjs");
 
@@ -37,37 +36,11 @@ async function main() {
 
   await prisma.admins.upsert({
     where: { username },
-    create: { username, password: hash, role: "owner" },
-    update: { password: hash, role: "owner" }
+    create: { username, password: hash, role: "admin" },
+    update: { password: hash, role: "admin" }
   });
 
-  console.log("Seed admin xong:", username, "(role: owner)");
-
-  // ===============================
-  // 1b. User AI đăng bài (Bearer), không đăng nhập web
-  // ===============================
-  const botExisting = await prisma.admins.findUnique({ where: { username: "ai-bot" } });
-  const botPassFromEnv = (process.env.AI_BOT_PASSWORD || "").trim();
-  if (!botExisting) {
-    const plain = botPassFromEnv || crypto.randomBytes(24).toString("base64url");
-    const botHash = bcrypt.hashSync(plain, 10);
-    await prisma.admins.create({
-      data: { username: "ai-bot", password: botHash, role: "bot" }
-    });
-    console.log(
-      "Đã tạo user ai-bot (role: bot). Cấu hình AI_PUBLISH_BEARER_TOKEN (>=16 ký tự) trên server để gọi API đăng bài."
-    );
-    if (!botPassFromEnv) {
-      console.log("Gợi ý: đặt AI_BOT_PASSWORD trong env rồi chạy lại seed nếu cần đặt mật khẩu cố định cho ai-bot (hiếm dùng).");
-    }
-  } else {
-    const patch = { role: "bot" };
-    if (botPassFromEnv) {
-      patch.password = bcrypt.hashSync(botPassFromEnv, 10);
-    }
-    await prisma.admins.update({ where: { id: botExisting.id }, data: patch });
-    console.log("Cập nhật ai-bot (role: bot).");
-  }
+  console.log("Seed admin xong:", username, "(role: admin)");
 
   // ===============================
   // 2. Seed VIDEO INTRO

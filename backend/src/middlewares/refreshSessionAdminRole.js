@@ -4,6 +4,7 @@
 "use strict";
 
 const { prisma } = require("../../db/prisma");
+const { normalizeAdminRole } = require("../utils/adminRoles");
 
 /**
  * @param {import('express').Request} req
@@ -17,9 +18,7 @@ async function refreshSessionAdminRole(req, res, next) {
   try {
     const u = await prisma.admins.findUnique({ where: { id: Number(req.session.adminId) } });
     if (u) {
-      let r = String(u.role || "").trim().toLowerCase();
-      if (r === "admin") r = "owner";
-      req.session.adminRole = r || "editor";
+      req.session.adminRole = normalizeAdminRole(u.role);
     }
   } catch (e) {
     return next(e);

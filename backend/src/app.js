@@ -10,6 +10,7 @@ const fs = require("fs");
 const config = require("../config");
 // Routes — Public API (người xem)
 const publicArticlesApi = require("./routes/api/publicArticles.routes");
+const articlesRbacApi = require("./routes/api/articlesRbac.routes");
 const healthApi = require("./routes/api/health.routes");
 const dbPingApi = require("./routes/api/dbPing.routes");
 const mediaRoutes = require("./routes/api/media.routes");
@@ -62,6 +63,7 @@ function buildApp() {
   app.use("/api/admin", adminArticlesRoutes);
   // Public
   app.use("/api/media", mediaRoutes);
+  app.use("/api", articlesRbacApi);
   app.use("/api", publicArticlesApi);
   app.use("/api", healthApi);
   app.use("/api", dbPingApi);

@@ -3,6 +3,7 @@
 backend/config/db.env
 
 node_modules/
+backend/dist-cjs/
 frontend/node_modules/
 frontend/dist/
 

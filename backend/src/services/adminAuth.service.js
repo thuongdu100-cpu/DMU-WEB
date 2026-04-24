@@ -7,6 +7,7 @@
 
 const bcrypt = require("bcryptjs");
 const { prisma } = require("../../db/prisma");
+const { normalizeAdminRole } = require("../utils/adminRoles");
 
 /**
  * Xác thực thông tin đăng nhập admin.
@@ -23,8 +24,8 @@ async function verifyAdminCredentials(usernameRaw, password) {
   const admin = await prisma.admins.findUnique({ where: { username } });
   if (!admin) return { ok: false };
 
-  const role = String(admin.role || "editor").trim().toLowerCase();
-  if (role === "bot") {
+  const roleRaw = String(admin.role || "").trim().toLowerCase();
+  if (roleRaw === "bot") {
     return { ok: false };
   }
 
@@ -35,7 +36,7 @@ async function verifyAdminCredentials(usernameRaw, password) {
     ok: true,
     adminId: admin.id,
     displayUsername: String(usernameRaw).trim() || username,
-    role: role === "admin" ? "owner" : role
+    role: normalizeAdminRole(admin.role)
   };
 }
 
