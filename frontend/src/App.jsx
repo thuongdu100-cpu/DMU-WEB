@@ -10,6 +10,15 @@ import { AdminArticles } from "./admin/AdminArticles.jsx";
 import { AdminArticleView } from "./admin/AdminArticleView.jsx";
 import { AdminArticleEdit } from "./admin/AdminArticleEdit.jsx";
 import { AdminUsers } from "./admin/AdminUsers.jsx";
+import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
+
+function withAdminBoundary(node) {
+  return (
+    <ErrorBoundary fallback={<div className="admin-msg error">Trang admin gặp lỗi. Vui lòng tải lại.</div>}>
+      {node}
+    </ErrorBoundary>
+  );
+}
 
 export default function App() {
   return (
@@ -22,12 +31,12 @@ export default function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminShell />}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="article/new" element={<AdminArticleNew />} />
-          <Route path="articles" element={<AdminArticles />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="article/:id" element={<AdminArticleView />} />
-          <Route path="article/:id/edit" element={<AdminArticleEdit />} />
+          <Route path="dashboard" element={withAdminBoundary(<AdminDashboard />)} />
+          <Route path="article/new" element={withAdminBoundary(<AdminArticleNew />)} />
+          <Route path="articles" element={withAdminBoundary(<AdminArticles />)} />
+          <Route path="users" element={withAdminBoundary(<AdminUsers />)} />
+          <Route path="article/:id" element={withAdminBoundary(<AdminArticleView />)} />
+          <Route path="article/:id/edit" element={withAdminBoundary(<AdminArticleEdit />)} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

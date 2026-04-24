@@ -1,20 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client.js";
-
-function articleStatusPillClass(s) {
-  if (s === "published") return "admin-status-pill--live";
-  if (s === "pending") return "admin-status-pill--pending";
-  if (s === "rejected") return "admin-status-pill--rejected";
-  return "admin-status-pill--draft";
-}
-
-function articleStatusLabel(s) {
-  if (s === "published") return "Đã đăng";
-  if (s === "pending") return "Chờ duyệt";
-  if (s === "rejected") return "Từ chối";
-  return "Nháp";
-}
+import { articleStatusLabel, articleStatusPillClass, isPublishedStatus } from "../utils/articleStatus.js";
 
 export function AdminArticles() {
   const [list, setList] = useState([]);
@@ -79,7 +66,7 @@ export function AdminArticles() {
                     <td>
                       <div className="admin-actions">
                         <Link className="btn-admin primary" to={"/admin/article/" + a.id}>
-                          {a.status === "published" ? "Đọc" : "Xem trước"}
+                          {isPublishedStatus(a.status) ? "Đọc" : "Xem trước"}
                         </Link>
                         <Link className="btn-admin" to={"/admin/article/" + a.id + "/edit"}>
                           Sửa

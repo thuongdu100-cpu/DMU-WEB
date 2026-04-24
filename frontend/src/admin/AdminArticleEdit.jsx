@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { api, readResponseJson } from "../api/client.js";
 import { buildEditArticleFormData, submitAdminArticleMultipart } from "../api/articleUpload.js";
 import { blocksFromArticle } from "../utils/articleLayout.js";
+import { articleStatusLabel, articleStatusPillClass, normalizeArticleStatus } from "../utils/articleStatus.js";
 import { ArticleEditorBlocks } from "./ArticleEditorBlocks.jsx";
 
 export function AdminArticleEdit() {
@@ -47,33 +48,20 @@ export function AdminArticleEdit() {
   }, [id]);
 
   function saveSuccessMessage(status) {
-    if (status === "published") {
+    const normalized = normalizeArticleStatus(status);
+    if (normalized === "published") {
       return "Đã lưu. Bài đã được duyệt — đã xuất bản công khai.";
     }
-    if (status === "pending") {
+    if (normalized === "pending") {
       return "Đã lưu. Bài đang chờ duyệt (chưa xuất bản công khai).";
     }
-    if (status === "rejected") {
+    if (normalized === "rejected") {
       return "Đã lưu. Bài đã bị từ chối xuất bản.";
     }
-    if (status === "draft") {
+    if (normalized === "draft") {
       return "Đã lưu. Bài chưa được duyệt công khai (đang là nháp).";
     }
     return "Đã lưu.";
-  }
-
-  function statusPillClass(s) {
-    if (s === "published") return "admin-status-pill--live";
-    if (s === "pending") return "admin-status-pill--pending";
-    if (s === "rejected") return "admin-status-pill--rejected";
-    return "admin-status-pill--draft";
-  }
-
-  function statusLabel(s) {
-    if (s === "published") return "Đã xuất bản";
-    if (s === "pending") return "Chờ duyệt";
-    if (s === "rejected") return "Từ chối";
-    return "Nháp";
   }
 
   async function save(statusOpt) {
@@ -114,7 +102,7 @@ export function AdminArticleEdit() {
   if (err) return <div className="admin-msg error">{err}</div>;
   if (!art) return <p className="admin-lead">Đang tải…</p>;
 
-  const st = art.status || "draft";
+  const st = normalizeArticleStatus(art?.status);
   const publishCta = myRole === "contributor" ? "Gửi duyệt" : "Xuất bản";
 
   return (

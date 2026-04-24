@@ -1,26 +1,10 @@
-import { Component, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, readResponseJson } from "../api/client.js";
+import { ErrorBoundary } from "../components/ErrorBoundary.jsx";
 import { mediaDisplayList } from "../utils/articleMedia.js";
+import { articleStatusLabel, articleStatusPillClass, isPublishedStatus, normalizeArticleStatus } from "../utils/articleStatus.js";
 import { ArticleBodyFromLayout } from "../components/ArticleBodyFromLayout.jsx";
-
-class ArticlePreviewErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <div className="admin-msg error">Không thể hiển thị nội dung bài viết. Vui lòng tải lại trang.</div>;
-    }
-    return this.props.children;
-  }
-}
 
 export function AdminArticleView() {
   const { id } = useParams();
@@ -60,10 +44,10 @@ export function AdminArticleView() {
   if (err) return <div className="admin-msg error">{err}</div>;
   if (!art) return <p className="admin-lead">Đang tải…</p>;
 
-  const hasLayout = Array.isArray(art?.contentLayout) && art.contentLayout.length > 0;
-  const legacyMedia = !hasLayout ? mediaDisplayList(art) : [];
-  const isDraft = art?.status === "draft";
-  const st = art?.status || "draft";
+  const article = art;
+  const st = normalizeArticleStatus(article?.status);
+  const hasLayout = Array.isArray(article?.contentLayout) && article.contentLayout.length > 0;
+  const legacyMedia = !hasLayout ? mediaDisplayList(article) : [];
   const canModerate = myRole === "admin" || myRole === "editor";
   const canEdit = myRole === "admin" || myRole === "editor" || myRole === "contributor" || myRole == null;
   const editLabel = st === "pending" && canModerate ? "Duyệt bài" : "Sửa";
@@ -87,29 +71,16 @@ export function AdminArticleView() {
         </div>
       ) : null}
       <h1 className="admin-h1" style={{ fontSize: "1.35rem" }}>
-        {art.title}
+        {article?.title || "(Chưa có tiêu đề)"}
       </h1>
       <p className="admin-lead" style={{ fontSize: "0.8rem" }}>
-        Tạo: {(art.createdAt || "").replace("T", " ").slice(0, 19)}
+        Tạo: {(article?.createdAt || "").replace("T", " ").slice(0, 19)}
         {" · "}
-        <span
-          className={
-            "admin-status-pill " +
-            (st === "published"
-              ? "admin-status-pill--live"
-              : st === "pending"
-                ? "admin-status-pill--pending"
-                : st === "rejected"
-                  ? "admin-status-pill--rejected"
-                  : "admin-status-pill--draft")
-          }
-        >
-          {st === "published" ? "Đã đăng" : st === "pending" ? "Chờ duyệt" : st === "rejected" ? "Từ chối" : "Nháp"}
-        </span>
+        <span className={"admin-status-pill " + articleStatusPillClass(st)}>{articleStatusLabel(st)}</span>
       </p>
-      {art.excerpt ? (
+      {article?.excerpt ? (
         <p className="admin-lead" style={{ fontSize: "0.9rem", marginBottom: "1rem" }}>
-          <strong>Tóm tắt:</strong> {art.excerpt}
+          <strong>Tóm tắt:</strong> {article.excerpt}
         </p>
       ) : null}
       <div className="admin-actions" style={{ marginBottom: "1rem" }}>
@@ -118,7 +89,7 @@ export function AdminArticleView() {
             {editLabel}
           </Link>
         ) : null}
-        {st === "published" ? (
+        {isPublishedStatus(st) ? (
           <Link className="btn-admin" to={"/news/" + id} target="_blank" rel="noopener noreferrer">
             Mở trang công khai
           </Link>
@@ -127,10 +98,10 @@ export function AdminArticleView() {
           Danh sách
         </Link>
       </div>
-      <ArticlePreviewErrorBoundary>
+      <ErrorBoundary fallback={<div className="admin-msg error">Không thể hiển thị nội dung bài viết.</div>}>
         {hasLayout ? (
           <div className="admin-article-view-layout">
-            <ArticleBodyFromLayout contentLayout={art.contentLayout} />
+            <ArticleBodyFromLayout contentLayout={article.contentLayout} />
           </div>
         ) : (
           <>
@@ -144,11 +115,11 @@ export function AdminArticleView() {
               )
             )}
             <div className="article-body-preview" style={{ marginTop: "1rem" }}>
-              {art.content || ""}
+              {article?.content || ""}
             </div>
           </>
         )}
-      </ArticlePreviewErrorBoundary>
+      </ErrorBoundary>
     </div>
   );
 }

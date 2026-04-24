@@ -4,6 +4,7 @@ import { BgGlow } from "../components/BgGlow.jsx";
 import { SiteHeader } from "../components/SiteHeader.jsx";
 import { SiteFooter } from "../components/SiteFooter.jsx";
 import { usePageVisit } from "../hooks/usePageVisit.js";
+import { readResponseJson } from "../api/client.js";
 import { mediaDisplayList } from "../utils/articleMedia.js";
 import { ArticleBodyFromLayout } from "../components/ArticleBodyFromLayout.jsx";
 
@@ -28,7 +29,7 @@ export function NewsDetailPage() {
       setState((s) => ({ ...s, loading: true, err: "" }));
       try {
         const r = await fetch("/api/public/articles/" + encodeURIComponent(id), { credentials: "include" });
-        const d = await r.json();
+        const d = await readResponseJson(r);
         if (!r.ok) throw new Error(d.message || "Không tải được bài.");
         if (cancelled) return;
         setState({ loading: false, err: "", article: d.article });
