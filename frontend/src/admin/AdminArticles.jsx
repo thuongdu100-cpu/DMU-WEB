@@ -2,6 +2,20 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client.js";
 
+function articleStatusPillClass(s) {
+  if (s === "published") return "admin-status-pill--live";
+  if (s === "pending") return "admin-status-pill--pending";
+  if (s === "rejected") return "admin-status-pill--rejected";
+  return "admin-status-pill--draft";
+}
+
+function articleStatusLabel(s) {
+  if (s === "published") return "Đã đăng";
+  if (s === "pending") return "Chờ duyệt";
+  if (s === "rejected") return "Từ chối";
+  return "Nháp";
+}
+
 export function AdminArticles() {
   const [list, setList] = useState([]);
   const [msg, setMsg] = useState("");
@@ -55,13 +69,8 @@ export function AdminArticles() {
                   <tr key={a.id}>
                     <td>{a.title}</td>
                     <td>
-                      <span
-                        className={
-                          "admin-status-pill " +
-                          (a.status === "draft" ? "admin-status-pill--draft" : "admin-status-pill--live")
-                        }
-                      >
-                        {a.status === "draft" ? "Nháp" : "Đã đăng"}
+                      <span className={"admin-status-pill " + articleStatusPillClass(a.status || "draft")}>
+                        {articleStatusLabel(a.status || "draft")}
                       </span>
                     </td>
                     <td style={{ whiteSpace: "nowrap", fontSize: "0.8rem" }}>
@@ -70,7 +79,7 @@ export function AdminArticles() {
                     <td>
                       <div className="admin-actions">
                         <Link className="btn-admin primary" to={"/admin/article/" + a.id}>
-                          {a.status === "draft" ? "Xem trước" : "Đọc"}
+                          {a.status === "published" ? "Đọc" : "Xem trước"}
                         </Link>
                         <Link className="btn-admin" to={"/admin/article/" + a.id + "/edit"}>
                           Sửa

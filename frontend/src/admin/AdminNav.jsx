@@ -34,7 +34,7 @@ export function AdminNav() {
       <Link to="/admin/dashboard">Dashboard</Link>
       <Link to="/admin/article/new">Đăng bài</Link>
       <Link to="/admin/articles">Quản lý bài viết</Link>
-      {role === "owner" || role === "moderator" ? <Link to="/admin/users">Tài khoản</Link> : null}
+      {role === "admin" ? <Link to="/admin/users">Tài khoản</Link> : null}
       <span className="spacer" />
       <a href="#logout" onClick={logout}>
         Đăng xuất

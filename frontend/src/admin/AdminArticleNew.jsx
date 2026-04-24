@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { readResponseJson } from "../api/client.js";
 import { buildNewArticleFormData, submitAdminArticleMultipart } from "../api/articleUpload.js";
 import { blocksFromArticle } from "../utils/articleLayout.js";
 import { ArticleEditorBlocks } from "./ArticleEditorBlocks.jsx";
@@ -8,6 +9,24 @@ export function AdminArticleNew() {
   const navigate = useNavigate();
   const [msg, setMsg] = useState("");
   const [blocks, setBlocks] = useState(() => blocksFromArticle(null));
+  const [myRole, setMyRole] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch("/api/admin/auth/me", { credentials: "include" });
+        const d = await readResponseJson(r);
+        if (!cancelled && r.ok && d.admin) setMyRole(d.role || null);
+      } catch {
+        if (!cancelled) setMyRole(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   async function saveWithStatus(status) {
     setMsg("");
     const titleEl = document.getElementById("title");
@@ -34,8 +53,14 @@ export function AdminArticleNew() {
         formData: fd
       });
       const id = d.article?.id;
+      const createdStatus = d.article?.status;
       if (status === "draft" && id) {
         setMsg("Đã lưu nháp (chưa duyệt công khai). Mở “Xem trước” trong danh sách bài khi cần.");
+        navigate("/admin/article/" + id);
+        return;
+      }
+      if (id && createdStatus === "pending") {
+        setMsg("Đã gửi bài #" + id + " chờ duyệt. Editor hoặc admin sẽ xuất bản khi đồng ý.");
         navigate("/admin/article/" + id);
         return;
       }
@@ -57,8 +82,18 @@ export function AdminArticleNew() {
     <>
       <h1 className="admin-h1">Đăng bài mới</h1>
       <p className="admin-lead">
-        Soạn theo khối; có thể <strong>lưu nháp</strong> để xem trước trong admin, rồi <strong>đăng bài</strong> khi sẵn
-        sàng. Bài nháp không hiển thị trên trang tin công khai.
+        Soạn theo khối; <strong>lưu nháp</strong> để tiếp tục sau.{" "}
+        {myRole === "contributor" ? (
+          <>
+            Với tài khoản <strong>contributor</strong>, nút <strong>Đăng bài</strong> gửi bài ở trạng thái{" "}
+            <strong>chờ duyệt</strong> (chưa lên trang công khai cho đến khi editor/admin xuất bản).
+          </>
+        ) : (
+          <>
+            <strong>Đăng bài</strong> xuất bản công khai (admin / editor). Bài nháp hoặc chờ duyệt không hiển thị trên
+            trang tin công khai.
+          </>
+        )}
       </p>
       {msg ? (
         <div className={"admin-msg " + (msg.startsWith("Đã") ? "ok" : "error")}>{msg}</div>
@@ -87,7 +122,7 @@ export function AdminArticleNew() {
             Lưu nháp
           </button>
           <button type="button" className="btn-admin primary" onClick={() => saveWithStatus("published")}>
-            Đăng bài
+            {myRole === "contributor" ? "Gửi duyệt" : "Đăng bài"}
           </button>
           <Link className="btn-admin" to="/admin/articles">
             Danh sách

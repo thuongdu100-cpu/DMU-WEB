@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { api } from "../api/client.js";
+import { api, readResponseJson } from "../api/client.js";
 import { buildEditArticleFormData, submitAdminArticleMultipart } from "../api/articleUpload.js";
 import { blocksFromArticle } from "../utils/articleLayout.js";
 import { ArticleEditorBlocks } from "./ArticleEditorBlocks.jsx";
@@ -13,6 +13,23 @@ export function AdminArticleEdit() {
   const [blocks, setBlocks] = useState([]);
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
+  const [myRole, setMyRole] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetch("/api/admin/auth/me", { credentials: "include" });
+        const d = await readResponseJson(r);
+        if (!cancelled && r.ok && d.admin) setMyRole(d.role || null);
+      } catch {
+        if (!cancelled) setMyRole(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -33,10 +50,30 @@ export function AdminArticleEdit() {
     if (status === "published") {
       return "Đã lưu. Bài đã được duyệt — đã xuất bản công khai.";
     }
+    if (status === "pending") {
+      return "Đã lưu. Bài đang chờ duyệt (chưa xuất bản công khai).";
+    }
+    if (status === "rejected") {
+      return "Đã lưu. Bài đã bị từ chối xuất bản.";
+    }
     if (status === "draft") {
       return "Đã lưu. Bài chưa được duyệt công khai (đang là nháp).";
     }
     return "Đã lưu.";
+  }
+
+  function statusPillClass(s) {
+    if (s === "published") return "admin-status-pill--live";
+    if (s === "pending") return "admin-status-pill--pending";
+    if (s === "rejected") return "admin-status-pill--rejected";
+    return "admin-status-pill--draft";
+  }
+
+  function statusLabel(s) {
+    if (s === "published") return "Đã xuất bản";
+    if (s === "pending") return "Chờ duyệt";
+    if (s === "rejected") return "Từ chối";
+    return "Nháp";
   }
 
   async function save(statusOpt) {
@@ -77,16 +114,15 @@ export function AdminArticleEdit() {
   if (err) return <div className="admin-msg error">{err}</div>;
   if (!art) return <p className="admin-lead">Đang tải…</p>;
 
-  const isDraft = art.status === "draft";
+  const st = art.status || "draft";
+  const publishCta = myRole === "contributor" ? "Gửi duyệt" : "Xuất bản";
 
   return (
     <>
       <h1 className="admin-h1">Sửa bài</h1>
       <p className="admin-lead" style={{ fontSize: "0.9rem" }}>
         Trạng thái:{" "}
-        <span className={"admin-status-pill " + (isDraft ? "admin-status-pill--draft" : "admin-status-pill--live")}>
-          {isDraft ? "Nháp (chưa công khai)" : "Đã xuất bản"}
-        </span>
+        <span className={"admin-status-pill " + statusPillClass(st)}>{statusLabel(st)}</span>
         {" · "}
         <Link to={"/admin/article/" + id}>Xem trước / đọc bài</Link>
       </p>
@@ -123,7 +159,7 @@ export function AdminArticleEdit() {
             Lưu nháp
           </button>
           <button type="button" className="btn-admin primary" onClick={() => save("published")}>
-            Xuất bản
+            {publishCta}
           </button>
           <button type="button" className="btn-admin" onClick={() => save(undefined)}>
             Chỉ cập nhật nội dung
