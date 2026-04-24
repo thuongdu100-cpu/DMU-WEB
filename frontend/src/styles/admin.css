@@ -226,7 +226,8 @@
   filter: brightness(1.06);
 }
 
-.admin-form .btn-row {
+.admin-form .btn-row,
+.admin-form .admin-actions {
   margin-top: 1.25rem;
 }
 
@@ -257,8 +258,13 @@
   gap: 0.5rem;
 }
 
-.admin-actions :is(button, a.btn-admin) {
-  padding: 0.45rem 0.85rem;
+/* Nút admin dùng chung (toolbar, chart nav, form, bảng) */
+button.btn-admin,
+a.btn-admin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
   font-size: 0.8125rem;
   font-weight: 600;
   border-radius: 8px;
@@ -268,17 +274,51 @@
   color: var(--text-primary);
   text-decoration: none;
   font-family: inherit;
+  line-height: 1.25;
+  box-sizing: border-box;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    filter 0.15s ease;
 }
 
-.admin-actions button.danger {
-  border-color: rgba(239, 68, 68, 0.45);
-  color: #fecaca;
+button.btn-admin:hover:not(:disabled),
+a.btn-admin:hover {
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border-subtle));
+  background: color-mix(in srgb, var(--bg-panel) 90%, var(--bg-card));
 }
 
-.admin-actions :is(button.primary, a.btn-admin.primary) {
+button.btn-admin:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button.btn-admin.primary,
+a.btn-admin.primary {
   background: linear-gradient(135deg, var(--btn-primary-start), var(--btn-primary-end));
   color: #fff;
   border: none;
+}
+
+button.btn-admin.primary:hover:not(:disabled),
+a.btn-admin.primary:hover {
+  filter: brightness(1.06);
+}
+
+.admin-actions button.danger {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  background: var(--bg-panel);
+  color: #fecaca;
+}
+
+.admin-actions button.danger:hover:not(:disabled) {
+  background: color-mix(in srgb, rgba(239, 68, 68, 0.12) 40%, var(--bg-panel));
 }
 
 /* —— Dashboard charts (SVG) —— */

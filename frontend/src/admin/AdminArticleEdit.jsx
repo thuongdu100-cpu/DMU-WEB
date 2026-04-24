@@ -13,7 +13,6 @@ export function AdminArticleEdit() {
   const [blocks, setBlocks] = useState([]);
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [resultPayload, setResultPayload] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -30,9 +29,18 @@ export function AdminArticleEdit() {
     })();
   }, [id]);
 
+  function saveSuccessMessage(status) {
+    if (status === "published") {
+      return "Đã lưu. Bài đã được duyệt — đã xuất bản công khai.";
+    }
+    if (status === "draft") {
+      return "Đã lưu. Bài chưa được duyệt công khai (đang là nháp).";
+    }
+    return "Đã lưu.";
+  }
+
   async function save(statusOpt) {
     setMsg("");
-    setResultPayload(null);
 
     let fd;
     try {
@@ -52,14 +60,8 @@ export function AdminArticleEdit() {
         method: "PUT",
         formData: fd
       });
-      setMsg("Đã lưu.");
+      setMsg(saveSuccessMessage(d.article?.status));
       setArt(d.article);
-      setResultPayload({
-        blog: d.blog || d.article || d.post || null,
-        images: Array.isArray(d.images) ? d.images : [],
-        videos: Array.isArray(d.videos) ? d.videos : [],
-        media: Array.isArray(d.media) ? d.media : []
-      });
       setExcerpt(d.article.excerpt || "");
       setBlocks((prev) => {
         prev.forEach((s) => {
@@ -88,24 +90,8 @@ export function AdminArticleEdit() {
         {" · "}
         <Link to={"/admin/article/" + id}>Xem trước / đọc bài</Link>
       </p>
-      {msg ? <div className={"admin-msg " + (msg === "Đã lưu." ? "ok" : "error")}>{msg}</div> : null}
-      {resultPayload ? (
-        <div className="admin-card admin-result-card">
-          <h2>Payload trả về từ API</h2>
-          <p className="admin-lead" style={{ marginBottom: "0.75rem" }}>
-            Blog ID: <strong>{resultPayload.blog?.id ?? "(không có)"}</strong>
-          </p>
-          <p className="admin-result-line">
-            <strong>images:</strong> {resultPayload.images.length}
-          </p>
-          <p className="admin-result-line">
-            <strong>videos:</strong> {resultPayload.videos.length}
-          </p>
-          <p className="admin-result-line">
-            <strong>media:</strong> {resultPayload.media.length}
-          </p>
-          <pre className="admin-result-json">{JSON.stringify(resultPayload, null, 2)}</pre>
-        </div>
+      {msg ? (
+        <div className={"admin-msg " + (msg.startsWith("Đã lưu") ? "ok" : "error")}>{msg}</div>
       ) : null}
       <form className="admin-form admin-card" encType="multipart/form-data" onSubmit={(e) => e.preventDefault()}>
         <label htmlFor="title">Tiêu đề *</label>
@@ -132,17 +118,17 @@ export function AdminArticleEdit() {
 
         <ArticleEditorBlocks blocks={blocks} setBlocks={setBlocks} />
 
-        <div className="btn-row admin-article-save-row">
-          <button type="button" className="btn btn-secondary" onClick={() => save("draft")}>
+        <div className="admin-actions admin-article-save-row">
+          <button type="button" className="btn-admin" onClick={() => save("draft")}>
             Lưu nháp
           </button>
-          <button type="button" className="btn btn-primary" onClick={() => save("published")}>
+          <button type="button" className="btn-admin primary" onClick={() => save("published")}>
             Xuất bản
           </button>
           <button type="button" className="btn-admin" onClick={() => save(undefined)}>
             Chỉ cập nhật nội dung
           </button>
-          <Link to="/admin/articles" style={{ marginLeft: "1rem" }}>
+          <Link className="btn-admin" to="/admin/articles">
             Huỷ
           </Link>
         </div>
