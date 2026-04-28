@@ -52,12 +52,10 @@ a {
   height: 520px;
   right: -160px;
   top: 18%;
-  background: radial-gradient(
-    circle,
-    var(--glow-violet) 0%,
-    var(--glow-magenta) 45%,
-    transparent 68%
-  );
+  background: radial-gradient(circle,
+      var(--glow-violet) 0%,
+      var(--glow-magenta) 45%,
+      transparent 68%);
 }
 
 .site-header {
@@ -70,7 +68,7 @@ a {
   border-bottom: 1px solid var(--border-subtle);
 }
 
-/* ~1440px: cân bằng nội dung vs lề hai bên trên màn lớn (trước đây 1160px hẹp quá) */
+/* ~1440px: cân bằng nội dung vs lề hai bên trên màn lớn  */
 .container {
   width: 100%;
   max-width: 1440px;
@@ -291,8 +289,7 @@ a {
 
 /* DARK MODE OVERLAY */
 [data-theme="dark"] .hero-visual::after {
-  background: radial-gradient( circle at center, rgba(0,0,0,0.05), rgba(0,0,0,0.35)
-  );
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.35));
 }
 
 [data-theme="dark"] .hero-video {
@@ -327,12 +324,10 @@ a {
 }
 
 .hero-title-gradient {
-  background: linear-gradient(
-    90deg,
-    var(--hero-gradient-start),
-    var(--hero-gradient-mid),
-    var(--hero-gradient-end)
-  );
+  background: linear-gradient(90deg,
+      var(--hero-gradient-start),
+      var(--hero-gradient-mid),
+      var(--hero-gradient-end));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -365,11 +360,9 @@ a {
 
 .btn-primary {
   color: #fff;
-  background: linear-gradient(
-    135deg,
-    var(--btn-primary-start),
-    var(--btn-primary-end)
-  );
+  background: linear-gradient(135deg,
+      var(--btn-primary-start),
+      var(--btn-primary-end));
   box-shadow: var(--shadow-primary);
 }
 
@@ -455,12 +448,10 @@ a {
   transform: translateY(-50%);
   width: min(380px, 52vw);
   height: min(300px, 88%);
-  background: radial-gradient(
-    ellipse 70% 60% at 40% 50%,
-    rgba(192, 132, 252, 0.32) 0%,
-    rgba(236, 72, 153, 0.14) 42%,
-    transparent 72%
-  );
+  background: radial-gradient(ellipse 70% 60% at 40% 50%,
+      rgba(192, 132, 252, 0.32) 0%,
+      rgba(236, 72, 153, 0.14) 42%,
+      transparent 72%);
   pointer-events: none;
   z-index: 0;
 }
@@ -622,11 +613,9 @@ a {
   border-radius: 18px;
   contain: layout style;
   background: linear-gradient(165deg, var(--mix-card-tint), var(--bg-card));
-  background: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--bg-card) 92%, var(--bg-panel)),
-    var(--bg-card)
-  );
+  background: linear-gradient(165deg,
+      color-mix(in srgb, var(--bg-card) 92%, var(--bg-panel)),
+      var(--bg-card));
   border: 1px solid var(--border-subtle);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
   box-shadow: 0 4px 24px color-mix(in srgb, var(--bg-page) 55%, rgba(0, 0, 0, 0.25));
@@ -640,12 +629,10 @@ a {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--accent) 35%, transparent),
-    transparent 45%,
-    color-mix(in srgb, var(--hero-gradient-end) 20%, transparent)
-  );
+  background: linear-gradient(145deg,
+      color-mix(in srgb, var(--accent) 35%, transparent),
+      transparent 45%,
+      color-mix(in srgb, var(--hero-gradient-end) 20%, transparent));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -838,11 +825,9 @@ a {
   border-radius: 50%;
   border: 1px solid var(--border-subtle);
   background: linear-gradient(155deg, var(--mix-arrow-bg-start), var(--bg-card));
-  background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--bg-panel) 65%, var(--bg-card)),
-    var(--bg-card)
-  );
+  background: linear-gradient(155deg,
+      color-mix(in srgb, var(--bg-panel) 65%, var(--bg-card)),
+      var(--bg-card));
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: var(--accent);
@@ -863,11 +848,9 @@ a {
   inset: 0;
   border-radius: inherit;
   background: radial-gradient(circle at 35% 25%, var(--accent-glow-18) 0%, transparent 62%);
-  background: radial-gradient(
-    circle at 35% 25%,
-    color-mix(in srgb, var(--accent) 28%, transparent) 0%,
-    transparent 62%
-  );
+  background: radial-gradient(circle at 35% 25%,
+      color-mix(in srgb, var(--accent) 28%, transparent) 0%,
+      transparent 62%);
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
@@ -940,6 +923,7 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .news-arrow,
   .news-arrow svg,
   .news-arrow::after {
@@ -1267,11 +1251,9 @@ a {
   padding: clamp(1.75rem, 4vw, 2.85rem);
   border-radius: 18px;
   background: linear-gradient(165deg, var(--mix-footer-panel-start), var(--bg-card));
-  background: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--bg-card) 88%, var(--bg-panel)),
-    var(--bg-card)
-  );
+  background: linear-gradient(165deg,
+      color-mix(in srgb, var(--bg-card) 88%, var(--bg-panel)),
+      var(--bg-card));
   border: 1px solid var(--border-subtle);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
   box-shadow: 0 8px 32px color-mix(in srgb, var(--bg-page) 65%, rgba(0, 0, 0, 0.35));
@@ -1567,6 +1549,7 @@ a {
 }
 
 @media (max-width: 640px) {
+
   .feature-cards,
   .feature-cards--intro {
     grid-template-columns: 1fr;

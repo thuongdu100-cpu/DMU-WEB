@@ -44,7 +44,7 @@ export function HomePage() {
                 </h1>
 
                 <p className="hero-desc">
-                  Trang tin chuyên cập nhật xu hướng trí tuệ nhân tạo...
+                  Trang tin chuyên cập nhật xu hướng trí tuệ nhân tạo
                 </p>
 
                 <div className="hero-cta">
@@ -66,7 +66,7 @@ export function HomePage() {
                   />
                 ) : (
                   <div className="hero-video-placeholder">
-                    Loading video...
+                    Loading video
                   </div>
                 )}
               </div>
@@ -86,7 +86,7 @@ export function HomePage() {
               </h2>
 
               <p className="intro-text intro-text--centered">
-                Phòng DMU (Deep Medicine Unit) là đơn vị nghiên cứu và ứng dụng trí tuệ nhân tạo...
+                Phòng DMU (Deep Medicine Unit) là đơn vị nghiên cứu và ứng dụng trí tuệ nhân tạo
               </p>
             </header>
 

@@ -3,6 +3,22 @@ import { Link } from "react-router-dom";
 import { api } from "../api/client.js";
 import { articleStatusLabel, articleStatusPillClass, isPublishedStatus } from "../utils/articleStatus.js";
 
+/** Chuyển ISO-UTC → chuỗi ngày giờ theo múi giờ Việt Nam */
+function formatDateTime(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return String(iso);
+  return d.toLocaleString("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
+}
+
 export function AdminArticles() {
   const [list, setList] = useState([]);
   const [msg, setMsg] = useState("");
@@ -61,7 +77,7 @@ export function AdminArticles() {
                       </span>
                     </td>
                     <td style={{ whiteSpace: "nowrap", fontSize: "0.8rem" }}>
-                      {(a.updatedAt || a.createdAt || "").slice(0, 16).replace("T", " ")}
+                      {formatDateTime(a.updatedAt || a.createdAt)}
                     </td>
                     <td>
                       <div className="admin-actions">

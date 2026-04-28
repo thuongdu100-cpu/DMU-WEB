@@ -6,6 +6,23 @@ import { mediaDisplayList } from "../utils/articleMedia.js";
 import { articleStatusLabel, articleStatusPillClass, isPublishedStatus, normalizeArticleStatus } from "../utils/articleStatus.js";
 import { ArticleBodyFromLayout } from "../components/ArticleBodyFromLayout.jsx";
 
+/** Chuyển ISO-UTC → chuỗi ngày giờ theo múi giờ Việt Nam */
+function formatDateTime(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return String(iso);
+  return d.toLocaleString("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  });
+}
+
 export function AdminArticleView() {
   const { id } = useParams();
   const [art, setArt] = useState(null);
@@ -74,7 +91,7 @@ export function AdminArticleView() {
         {article?.title || "(Chưa có tiêu đề)"}
       </h1>
       <p className="admin-lead" style={{ fontSize: "0.8rem" }}>
-        Tạo: {(article?.createdAt || "").replace("T", " ").slice(0, 19)}
+        Tạo: {formatDateTime(article?.createdAt)}
         {" · "}
         <span className={"admin-status-pill " + articleStatusPillClass(st)}>{articleStatusLabel(st)}</span>
       </p>
