@@ -19,7 +19,7 @@ function formatDateTime(iso) {
   });
 }
 
-export function AdminArticles() {
+export default function AdminArticles() {
   const [list, setList] = useState([]);
   const [msg, setMsg] = useState("");
 

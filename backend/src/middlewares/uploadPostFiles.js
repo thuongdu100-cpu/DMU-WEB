@@ -30,7 +30,7 @@ function ensureDir(p) {
 }
 
 const imageMime = /^image\/(jpeg|pjpeg|png|x-png|gif|webp|bmp|tiff|avif)$/i;
-const videoMime = /^video\/(mp4|webm|quicktime|x-ms-wmv)$/i;
+const videoMime = /^video\/(mp4|webm|quicktime|x-ms-wmv|x-msvideo|x-matroska|mpeg|ogg|3gpp|x-flv|avi|mov)$/i;
 
 function isAllowedMediaFieldName(name) {
   if (name == null || typeof name !== "string") return false;

@@ -6,7 +6,7 @@ import { blocksFromArticle } from "../utils/articleLayout.js";
 import { articleStatusLabel, articleStatusPillClass, normalizeArticleStatus } from "../utils/articleStatus.js";
 import { ArticleEditorBlocks } from "./ArticleEditorBlocks.jsx";
 
-export function AdminArticleEdit() {
+export default function AdminArticleEdit() {
   const { id } = useParams();
   const [art, setArt] = useState(null);
   const [err, setErr] = useState("");
@@ -77,6 +77,7 @@ export function AdminArticleEdit() {
       });
     } catch (err) {
       setMsg(err.message || "Kiểm tra ảnh/video đã chọn file chưa.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -85,7 +86,8 @@ export function AdminArticleEdit() {
         method: "PUT",
         formData: fd
       });
-      setMsg(saveSuccessMessage(d.article?.status));
+      const successMsg = saveSuccessMessage(d.article?.status);
+      setMsg(successMsg);
       setArt(d.article);
       setExcerpt(d.article.excerpt || "");
       setBlocks((prev) => {
@@ -95,8 +97,10 @@ export function AdminArticleEdit() {
         return blocksFromArticle(d.article);
       });
     } catch (e) {
-      setMsg(e.message || "Lỗi");
+      console.error("[AdminArticleEdit] save error:", e);
+      setMsg(e.message || "Lỗi khi cập nhật bài viết.");
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   if (err) return <div className="admin-msg error">{err}</div>;
@@ -110,7 +114,7 @@ export function AdminArticleEdit() {
       <h1 className="admin-h1">Sửa bài</h1>
       <p className="admin-lead" style={{ fontSize: "0.9rem" }}>
         Trạng thái:{" "}
-        <span className={"admin-status-pill " + statusPillClass(st)}>{statusLabel(st)}</span>
+        <span className={"admin-status-pill " + articleStatusPillClass(st)}>{articleStatusLabel(st)}</span>
         {" · "}
         <Link to={"/admin/article/" + id}>Xem trước / đọc bài</Link>
       </p>

@@ -23,7 +23,7 @@ function formatDateTime(iso) {
   });
 }
 
-export function AdminArticleView() {
+export default function AdminArticleView() {
   const { id } = useParams();
   const [art, setArt] = useState(null);
   const [err, setErr] = useState("");

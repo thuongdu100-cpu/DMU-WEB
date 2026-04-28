@@ -39,6 +39,7 @@ const apiProxy = {
 
 export default defineConfig({
   plugins: [react()],
+
   server: {
     host: true,
     port: 5173,
@@ -46,6 +47,25 @@ export default defineConfig({
       "/api": apiProxy,
       "/uploads": apiProxy,
       "/posts": apiProxy
+    }
+  },
+
+  build: {
+    /* ── Production source-map giúp debug lỗi trên staging/production ── */
+    sourcemap: true,
+
+    rollupOptions: {
+      output: {
+        /**
+         * Tách vendor libraries thành chunk riêng.
+         * Browser cache chunk vendor lâu dài vì hash chỉ thay đổi khi
+         * upgrade react/router, không phải khi sửa code app.
+         */
+        manualChunks: {
+          "vendor-react": ["react", "react-dom"],
+          "vendor-router": ["react-router-dom"]
+        }
+      }
     }
   }
 });

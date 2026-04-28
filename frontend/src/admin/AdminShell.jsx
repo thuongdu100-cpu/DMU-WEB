@@ -5,7 +5,7 @@ import { AdminNav } from "./AdminNav.jsx";
 import "../styles/admin.css";
 import { readResponseJson } from "../api/client.js";
 
-export function AdminShell() {
+export default function AdminShell() {
   const navigate = useNavigate();
   const [ready, setReady] = useState(false);
 

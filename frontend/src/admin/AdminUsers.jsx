@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { readResponseJson } from "../api/client.js";
 
-export function AdminUsers() {
+export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [meRole, setMeRole] = useState(null);
   const [msg, setMsg] = useState("");

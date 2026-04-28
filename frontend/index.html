@@ -8,7 +8,22 @@
     <meta name="theme-color" content="#b23538" />
     <meta name="msapplication-TileColor" content="#b23538" />
 
-    <!-- Fonts -->
+    <!--
+      Theme persistence: đọc localStorage TRƯỚC React mount
+      để tránh flash sáng→tối (hoặc ngược lại).
+    -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("dmu-news-theme");
+          if (t === "light" || t === "dark") {
+            document.documentElement.setAttribute("data-theme", t);
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Fonts — preconnect + swap for fast text rendering -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

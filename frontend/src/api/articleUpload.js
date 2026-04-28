@@ -7,7 +7,7 @@ import { layoutPayloadFromBlocks, plainTextFromBlocks } from "../utils/articleLa
 
 /** Phản hồi từ server khác DMU busboy (thường do proxy trỏ nhầm cổng / API cũ). */
 const UNEXPECTED_FIELD_HINT =
-  "Lỗi “Unexpected field” thường do trình duyệt đang gọi nhầm API không phải bản DMU (busboy). " +
+  "Lỗi \u201CUnexpected field\u201D thường do trình duyệt đang gọi nhầm API không phải bản DMU (busboy). " +
   "Mở /api/health trên cùng host với trang (vd. :5173 khi dev Vite) — trường uploadParser phải là busboy. " +
   "Nếu không: chỉ chạy API trên 3001 (`$env:PORT=3001; npm run server` hoặc `npm run dev` từ thư mục gốc dự án), " +
   "và đảm bảo Vite proxy trỏ tới đúng cổng đó (mặc định đã là 3001; file frontend/.env.development).";
@@ -27,6 +27,26 @@ const NETWORK_HINT =
   "Không kết nối được API khi tải file lên (Failed to fetch). " +
   "Chạy backend (mặc định dev: cổng 3001): từ thư mục gốc `npm run dev` hoặc `npm run server` với PORT=3001. " +
   "Nếu chỉ chạy Vite trong frontend, cần API đang lắng nghe đúng cổng proxy (mặc định 3001; xem frontend/.env.development và vite.config.js).";
+
+/**
+ * Trích URL ảnh đầu tiên từ contentLayout để dùng làm thumbnail.
+ * @param {object[]} layout - mảng layout blocks đã serialize
+ * @returns {string|undefined}
+ */
+function extractFirstImageFromLayout(layout) {
+  if (!Array.isArray(layout)) return undefined;
+  for (const block of layout) {
+    if (block && block.type === "image") {
+      // Existing image (has URL)
+      if (typeof block.url === "string" && block.url.startsWith("/uploads/")) {
+        return block.url;
+      }
+      // New image — thumbnail sẽ được backend resolve sau upload
+      // Không thể biết URL trước khi upload xong, nên bỏ qua
+    }
+  }
+  return undefined;
+}
 
 /**
  * @param {FormData} formData
@@ -50,6 +70,11 @@ export function buildNewArticleFormData({ title, excerpt, blocks, status }) {
   fd.append("contentLayout", JSON.stringify(layout));
   appendMediaFilesInOrder(fd, files);
   if (status === "draft" || status === "published") fd.append("status", status);
+
+  // Auto-thumbnail: dùng ảnh đầu tiên nếu chưa set
+  const autoThumb = extractFirstImageFromLayout(layout);
+  if (autoThumb) fd.append("thumbnail", autoThumb);
+
   return fd;
 }
 
@@ -65,6 +90,11 @@ export function buildEditArticleFormData({ title, excerpt, blocks, status }) {
   fd.append("contentLayout", JSON.stringify(layout));
   appendMediaFilesInOrder(fd, files);
   if (status === "draft" || status === "published") fd.append("status", status);
+
+  // Auto-thumbnail: dùng ảnh đầu tiên nếu chưa set
+  const autoThumb = extractFirstImageFromLayout(layout);
+  if (autoThumb) fd.append("thumbnail", autoThumb);
+
   return fd;
 }
 

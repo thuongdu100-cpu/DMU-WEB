@@ -4,7 +4,7 @@ import { BgGlow } from "../components/BgGlow.jsx";
 import "../styles/admin.css";
 import { readResponseJson } from "../api/client.js";
 
-export function AdminLogin() {
+export default function AdminLogin() {
   const navigate = useNavigate();
   const [msg, setMsg] = useState("");
 

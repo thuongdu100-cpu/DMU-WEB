@@ -5,7 +5,7 @@ import { buildNewArticleFormData, submitAdminArticleMultipart } from "../api/art
 import { blocksFromArticle } from "../utils/articleLayout.js";
 import { ArticleEditorBlocks } from "./ArticleEditorBlocks.jsx";
 
-export function AdminArticleNew() {
+export default function AdminArticleNew() {
   const navigate = useNavigate();
   const [msg, setMsg] = useState("");
   const [blocks, setBlocks] = useState(() => blocksFromArticle(null));
@@ -44,6 +44,7 @@ export function AdminArticleNew() {
       fd = buildNewArticleFormData({ title, excerpt, blocks, status });
     } catch (err) {
       setMsg(err.message || "Kiểm tra ảnh/video đã chọn file chưa.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -74,7 +75,9 @@ export function AdminArticleNew() {
       if (titleEl) titleEl.value = "";
       if (excerptEl) excerptEl.value = "";
     } catch (err) {
-      setMsg(err.message || "Lỗi");
+      console.error("[AdminArticleNew] save error:", err);
+      setMsg(err.message || "Lỗi khi đăng bài.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 

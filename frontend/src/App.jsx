@@ -1,16 +1,31 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { HashScroll } from "./components/HashScroll.jsx";
 import { HomePage } from "./pages/HomePage.jsx";
 import { NewsDetailPage } from "./pages/NewsDetailPage.jsx";
-import { AdminShell } from "./admin/AdminShell.jsx";
-import { AdminLogin } from "./admin/AdminLogin.jsx";
-import { AdminDashboard } from "./admin/AdminDashboard.jsx";
-import { AdminArticleNew } from "./admin/AdminArticleNew.jsx";
-import { AdminArticles } from "./admin/AdminArticles.jsx";
-import { AdminArticleView } from "./admin/AdminArticleView.jsx";
-import { AdminArticleEdit } from "./admin/AdminArticleEdit.jsx";
-import { AdminUsers } from "./admin/AdminUsers.jsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
+
+/* ──────────────────────────────────────────────
+   Lazy-loaded admin modules (separate chunk).
+   Public users never download this code.
+   ────────────────────────────────────────────── */
+const AdminShell        = lazy(() => import("./admin/AdminShell.jsx"));
+const AdminLogin        = lazy(() => import("./admin/AdminLogin.jsx"));
+const AdminDashboard    = lazy(() => import("./admin/AdminDashboard.jsx"));
+const AdminArticleNew   = lazy(() => import("./admin/AdminArticleNew.jsx"));
+const AdminArticles     = lazy(() => import("./admin/AdminArticles.jsx"));
+const AdminArticleView  = lazy(() => import("./admin/AdminArticleView.jsx"));
+const AdminArticleEdit  = lazy(() => import("./admin/AdminArticleEdit.jsx"));
+const AdminUsers        = lazy(() => import("./admin/AdminUsers.jsx"));
+
+/* Spinner shown while admin chunk is loading */
+function AdminFallback() {
+  return (
+    <div className="admin-wrap" style={{ textAlign: "center", paddingTop: "4rem" }}>
+      <p className="admin-lead" style={{ fontSize: "1rem" }}>Đang tải trang quản trị…</p>
+    </div>
+  );
+}
 
 function withAdminBoundary(node) {
   return (
@@ -25,18 +40,46 @@ export default function App() {
     <>
       <HashScroll />
       <Routes>
+        {/* ── Public routes (eager-loaded) ── */}
         <Route path="/" element={<HomePage />} />
         <Route path="/news/:id" element={<NewsDetailPage />} />
 
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminShell />}>
+        {/* ── Admin routes (lazy-loaded, separate chunk) ── */}
+        <Route
+          path="/admin/login"
+          element={
+            <Suspense fallback={<AdminFallback />}>
+              <AdminLogin />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <Suspense fallback={<AdminFallback />}>
+              <AdminShell />
+            </Suspense>
+          }
+        >
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="dashboard" element={withAdminBoundary(<AdminDashboard />)} />
-          <Route path="article/new" element={withAdminBoundary(<AdminArticleNew />)} />
-          <Route path="articles" element={withAdminBoundary(<AdminArticles />)} />
-          <Route path="users" element={withAdminBoundary(<AdminUsers />)} />
-          <Route path="article/:id" element={withAdminBoundary(<AdminArticleView />)} />
-          <Route path="article/:id/edit" element={withAdminBoundary(<AdminArticleEdit />)} />
+          <Route path="dashboard" element={withAdminBoundary(
+            <Suspense fallback={<AdminFallback />}><AdminDashboard /></Suspense>
+          )} />
+          <Route path="article/new" element={withAdminBoundary(
+            <Suspense fallback={<AdminFallback />}><AdminArticleNew /></Suspense>
+          )} />
+          <Route path="articles" element={withAdminBoundary(
+            <Suspense fallback={<AdminFallback />}><AdminArticles /></Suspense>
+          )} />
+          <Route path="users" element={withAdminBoundary(
+            <Suspense fallback={<AdminFallback />}><AdminUsers /></Suspense>
+          )} />
+          <Route path="article/:id" element={withAdminBoundary(
+            <Suspense fallback={<AdminFallback />}><AdminArticleView /></Suspense>
+          )} />
+          <Route path="article/:id/edit" element={withAdminBoundary(
+            <Suspense fallback={<AdminFallback />}><AdminArticleEdit /></Suspense>
+          )} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

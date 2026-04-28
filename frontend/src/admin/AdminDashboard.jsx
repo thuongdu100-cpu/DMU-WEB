@@ -203,7 +203,7 @@ function WeekWaveChartSvg({ series, title, stroke, fill }) {
   );
 }
 
-export function AdminDashboard() {
+export default function AdminDashboard() {
   const [err, setErr] = useState("");
   const [data, setData] = useState(null);
   const [block, setBlock] = useState(0);
