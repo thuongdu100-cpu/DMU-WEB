@@ -94,6 +94,28 @@ function publicUrlToAbsPath(publicPath) {
   return path.join(config.paths.uploads, publicPath.replace(/^\/uploads\//, ""));
 }
 
+/** Trả về URL đầu tiên trong danh sách mà file tương ứng còn tồn tại trên disk. */
+function pickFirstExistingUploadUrl(urls) {
+  const seen = new Set();
+  for (const u of urls || []) {
+    if (typeof u !== "string" || !u.startsWith("/uploads/")) continue;
+    if (seen.has(u)) continue;
+    seen.add(u);
+    const abs = publicUrlToAbsPath(u);
+    if (abs && fs.existsSync(abs)) return u;
+  }
+  return null;
+}
+
+/** Thumbnail hiển thị công khai: bỏ đường dẫn chết, thử ảnh trong nội dung. */
+function resolveSummaryThumbnail(a) {
+  if (!a) return null;
+  const candidates = [];
+  if (a.thumbnail) candidates.push(a.thumbnail);
+  for (const u of a.images || []) candidates.push(u);
+  return pickFirstExistingUploadUrl(candidates);
+}
+
 /** Xoá file upload khỏi disk (bỏ qua nếu không tồn tại). */
 function deleteUploadFile(url) {
   const abs = publicUrlToAbsPath(url);
@@ -307,7 +329,7 @@ async function listPublicSummaries() {
     id: a.id,
     title: a.title,
     slug: a.slug,
-    thumbnail: a.thumbnail || (a.media?.find((m) => m.type === "image"))?.url || null,
+    thumbnail: resolveSummaryThumbnail(a),
     excerpt: String(a.excerpt || "").trim() || excerptFromContent(a.content),
     createdAt: a.createdAt,
     updatedAt: a.updatedAt
