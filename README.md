@@ -29,6 +29,17 @@ Hoac mot lenh: `npm run db:init` (= `migrate deploy` + `seed`).
 npm run db:migrate:deploy
 ```
 
+**Luu y:** lan dau chay video intro.
+- chay cac buoc o tren
+- Chi 1 video duy nhat duoc phep co `is_hero = true`
+- Neu khong co video nao duoc set -> trang chu se khong hien thi video
+- He thong khong tu dong seed dung neu thieu cau hinh
+
+```bash
+# nam trong table media cua db, chỉ cần set gia tri
+is_hero = true
+```
+  
 **Luu y:** `db:push` van co trong package (thu nhanh, khong ghi lich su). Du an chinh thuc nen dung **migrate**.
 
 **Prisma & `DATABASE_URL`:** Cac lenh `db:*` dung `scripts/prisma-env.cjs` de nap `.env` goc roi `backend/config/db.env`. Chay `npm run db:migrate:deploy` tu **thu muc goc** `DMUWeb`.
